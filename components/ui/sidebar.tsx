@@ -48,7 +48,7 @@ const hodNavItems: NavItemType[] = [
 ]
 
 const staffNavItems: NavItemType[] = [
-  { href: "/dashboard", label: "Dashboard", icon: Home },
+  { href: "/staff-dashboard", label: "Dashboard", icon: Home },
   { href: "/events", label: "Event Creation", icon: BarChart2 },
   { href: "/student-management", label: "Student Management", icon: Receipt },
   { href: "/join-request", label: "Join Request", icon: HelpCircle },
