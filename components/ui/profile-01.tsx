@@ -1,10 +1,4 @@
-import {
-  LogOut,
-  MoveUpRight,
-  Settings,
-  CreditCard,
-  FileText,
-} from "lucide-react";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -36,26 +30,6 @@ export default function Profile01({
   avatar = defaultProfile.avatar,
   subscription = defaultProfile.subscription,
 }: Partial<Profile01Props> = defaultProfile) {
-  const menuItems: MenuItem[] = [
-    {
-      label: "Subscription",
-      value: subscription,
-      href: "#",
-      icon: <CreditCard className="w-4 h-4" />,
-      external: false,
-    },
-    {
-      label: "Settings",
-      href: "#",
-      icon: <Settings className="w-4 h-4" />,
-    },
-    {
-      label: "Terms & Policies",
-      href: "#",
-      icon: <FileText className="w-4 h-4" />,
-      external: true,
-    },
-  ];
 
   return (
     <div className="w-full max-w-sm mx-auto">
@@ -81,38 +55,12 @@ export default function Profile01({
               <p className="text-zinc-600 dark:text-zinc-400">{role}</p>
             </div>
           </div>
-          <div className="h-px bg-zinc-200 dark:bg-zinc-800 my-6" />
-          <div className="space-y-2">
-            {menuItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="flex items-center justify-between p-2 
-                                    hover:bg-zinc-50 dark:hover:bg-zinc-800/50 
-                                    rounded-lg transition-colors duration-200"
-              >
-                <div className="flex items-center gap-2">
-                  {item.icon}
-                  <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                    {item.label}
-                  </span>
-                </div>
-                <div className="flex items-center">
-                  {item.value && (
-                    <span className="text-sm text-zinc-500 dark:text-zinc-400 mr-2">
-                      {item.value}
-                    </span>
-                  )}
-                  {item.external && <MoveUpRight className="w-4 h-4" />}
-                </div>
-              </Link>
-            ))}
-
+          <div className="mt-6">
             <button
               type="button"
               className="w-full flex items-center justify-between p-2 
-                                hover:bg-zinc-50 dark:hover:bg-zinc-800/50 
-                                rounded-lg transition-colors duration-200"
+                              hover:bg-zinc-50 dark:hover:bg-zinc-800/50 
+                              rounded-lg transition-colors duration-200"
             >
               <div className="flex items-center gap-2">
                 <LogOut className="w-4 h-4" />
