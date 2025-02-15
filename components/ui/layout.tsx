@@ -24,7 +24,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className={`flex h-screen ${theme === "dark" ? "dark" : ""}`}>
-      <Sidebar role="student" />
+      <Sidebar role="staff" />
       <div className="w-full flex flex-1 flex-col">
         <header className="h-16 border-b border-gray-200 dark:border-[#1F1F23]">
           <TopNav />
