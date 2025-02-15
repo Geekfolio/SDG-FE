@@ -1,7 +1,8 @@
 import { StudentDetails } from "@/components/STAFFS/StudentDetails"
 import Layout from "@/components/ui/layout"
 
-export default function StudentPage({ params }: { params: { id: string } }) {
+export default async function StudentPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   return (
     <Layout>
       <div className="space-y-8">
