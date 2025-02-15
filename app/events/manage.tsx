@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { PlusCircle, Calendar, Users, Trophy, Clock } from "lucide-react";
+import {
+  PlusCircle,
+  Calendar,
+  Users,
+  Trophy,
+  Clock,
+  ChevronDown,
+} from "lucide-react";
+import { Leaderboard } from "@/components/EVENTS/leaderboard";
 import {
   Card,
   CardContent,
@@ -53,15 +61,33 @@ const liveEvents = [
 
 export function EventManagement() {
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
+  const [selectedLeaderboardId, setSelectedLeaderboardId] = useState<
+    number | null
+  >(null);
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold">Live Events</h2>
-        <Button onClick={() => setIsCreatingEvent(true)}>
-          <PlusCircle className="mr-2 h-4 w-4" /> Create Event
-        </Button>
-      </div>
+      {selectedLeaderboardId && (
+        <div className="border rounded-lg p-4 bg-background">
+          <Button
+            variant="ghost"
+            onClick={() => setSelectedLeaderboardId(null)}
+            className="mb-4 gap-1"
+          >
+            <ChevronDown className="h-4 w-4 rotate-90" />
+            Back to Events
+          </Button>
+          <Leaderboard eventId={selectedLeaderboardId} />
+        </div>
+      )}
+      {!selectedLeaderboardId && (
+        <div className="flex justify-between items-center">
+          <h2 className="text-2xl font-semibold">Live Events</h2>
+          <Button onClick={() => setIsCreatingEvent(true)}>
+            <PlusCircle className="mr-2 h-4 w-4" /> Create Event
+          </Button>
+        </div>
+      )}
 
       {isCreatingEvent && (
         <EventCreationForm onClose={() => setIsCreatingEvent(false)} />
@@ -69,7 +95,11 @@ export function EventManagement() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {liveEvents.map((event) => (
-          <LiveEventCard key={event.id} event={event} />
+          <LiveEventCard 
+            key={event.id} 
+            event={event}
+            setSelectedLeaderboardId={setSelectedLeaderboardId}
+          />
         ))}
       </div>
     </div>
@@ -123,6 +153,19 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="event-scope">Event Scope</Label>
+            <Select>
+              <SelectTrigger>
+                <SelectValue placeholder="Select event scope" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="class">Class</SelectItem>
+                <SelectItem value="department">Department</SelectItem>
+                <SelectItem value="college">College</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="flex items-center space-x-2">
             <Switch id="live-tracking" />
             <Label htmlFor="live-tracking">Enable Live Tracking</Label>
@@ -139,7 +182,13 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
   );
 }
 
-function LiveEventCard({ event }: { event: (typeof liveEvents)[number] }) {
+function LiveEventCard({ 
+  event,
+  setSelectedLeaderboardId
+}: { 
+  event: (typeof liveEvents)[number];
+  setSelectedLeaderboardId: (id: number) => void;
+}) {
   return (
     <Card>
       <CardHeader>
@@ -169,7 +218,11 @@ function LiveEventCard({ event }: { event: (typeof liveEvents)[number] }) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full">
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => setSelectedLeaderboardId(event.id)}
+        >
           <Trophy className="mr-2 h-4 w-4" /> View Leaderboard
         </Button>
       </CardFooter>
