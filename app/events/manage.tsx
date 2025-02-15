@@ -1,14 +1,27 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { PlusCircle, Calendar, Users, Trophy, Clock } from "lucide-react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
+import { useState } from "react";
+import { PlusCircle, Calendar, Users, Trophy, Clock } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 
 // Mock data for live events
 const liveEvents = [
@@ -36,10 +49,10 @@ const liveEvents = [
     participants: 150,
     status: "Registration Open",
   },
-]
+];
 
 export function EventManagement() {
-  const [isCreatingEvent, setIsCreatingEvent] = useState(false)
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
 
   return (
     <div className="space-y-8">
@@ -50,7 +63,9 @@ export function EventManagement() {
         </Button>
       </div>
 
-      {isCreatingEvent && <EventCreationForm onClose={() => setIsCreatingEvent(false)} />}
+      {isCreatingEvent && (
+        <EventCreationForm onClose={() => setIsCreatingEvent(false)} />
+      )}
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {liveEvents.map((event) => (
@@ -58,7 +73,7 @@ export function EventManagement() {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 function EventCreationForm({ onClose }: { onClose: () => void }) {
@@ -66,7 +81,9 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
     <Card>
       <CardHeader>
         <CardTitle>Create New Event</CardTitle>
-        <CardDescription>Fill in the details to create a new hackathon or coding event.</CardDescription>
+        <CardDescription>
+          Fill in the details to create a new hackathon or coding event.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form className="space-y-4">
@@ -76,7 +93,10 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="event-description">Event Description</Label>
-            <Textarea id="event-description" placeholder="Describe your event" />
+            <Textarea
+              id="event-description"
+              placeholder="Describe your event"
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -96,7 +116,9 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="hackathon">Hackathon</SelectItem>
-                <SelectItem value="coding-challenge">Coding Challenge</SelectItem>
+                <SelectItem value="coding-challenge">
+                  Coding Challenge
+                </SelectItem>
                 <SelectItem value="workshop">Workshop</SelectItem>
               </SelectContent>
             </Select>
@@ -114,7 +136,7 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
         <Button>Create Event</Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
 
 function LiveEventCard({ event }: { event: (typeof liveEvents)[number] }) {
@@ -129,13 +151,15 @@ function LiveEventCard({ event }: { event: (typeof liveEvents)[number] }) {
           <div className="flex items-center">
             <Calendar className="mr-2 h-4 w-4" />
             <span>
-              {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+              {new Date(event.startDate).toLocaleDateString()} -{" "}
+              {new Date(event.endDate).toLocaleDateString()}
             </span>
           </div>
           <div className="flex items-center">
             <Clock className="mr-2 h-4 w-4" />
             <span>
-              {new Date(event.startDate).toLocaleTimeString()} - {new Date(event.endDate).toLocaleTimeString()}
+              {new Date(event.startDate).toLocaleTimeString()} -{" "}
+              {new Date(event.endDate).toLocaleTimeString()}
             </span>
           </div>
           <div className="flex items-center">
@@ -150,6 +174,5 @@ function LiveEventCard({ event }: { event: (typeof liveEvents)[number] }) {
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
-

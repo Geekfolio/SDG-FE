@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { TableCell } from "@/components/ui/table"
-import { TableBody } from "@/components/ui/table"
-import { TableHead } from "@/components/ui/table"
-import { TableRow } from "@/components/ui/table"
-import { TableHeader } from "@/components/ui/table"
-import { Table } from "@/components/ui/table"
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { TableCell } from "@/components/ui/table";
+import { TableBody } from "@/components/ui/table";
+import { TableHead } from "@/components/ui/table";
+import { TableRow } from "@/components/ui/table";
+import { TableHeader } from "@/components/ui/table";
+import { Table } from "@/components/ui/table";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 interface HackathonEntry {
-    name: string;
-    date: string;
-    result: string;
+  name: string;
+  date: string;
+  result: string;
 }
 // Mock function to fetch student data
 const fetchStudentData = (id: string) => {
@@ -45,17 +45,17 @@ const fetchStudentData = (id: string) => {
       { subject: "Web Development", score: 92 },
       { subject: "Machine Learning", score: 88 },
     ],
-  }
-}
+  };
+};
 
 export function StudentDetails({ id }: { id: string }) {
-  const [student, setStudent] = useState<any>(null)
+  const [student, setStudent] = useState<any>(null);
 
   useEffect(() => {
-    setStudent(fetchStudentData(id))
-  }, [id])
+    setStudent(fetchStudentData(id));
+  }, [id]);
 
-  if (!student) return <div>Loading...</div>
+  if (!student) return <div>Loading...</div>;
 
   return (
     <div className="space-y-8">
@@ -114,7 +114,7 @@ export function StudentDetails({ id }: { id: string }) {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   data={Object.entries(student.codingSkills).map(
-                    ([key, value]) => ({ name: key, value })
+                    ([key, value]) => ({ name: key, value }),
                   )}
                 >
                   <XAxis dataKey="name" />
@@ -147,7 +147,7 @@ export function StudentDetails({ id }: { id: string }) {
                         <TableCell>{hackathon.date}</TableCell>
                         <TableCell>{hackathon.result}</TableCell>
                       </TableRow>
-                    )
+                    ),
                   )}
                 </TableBody>
               </Table>
@@ -174,4 +174,3 @@ export function StudentDetails({ id }: { id: string }) {
     </div>
   );
 }
-
