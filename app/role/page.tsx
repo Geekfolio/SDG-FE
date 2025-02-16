@@ -1,48 +1,73 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { UserRound, GraduationCap, ArrowLeft } from "lucide-react"
-import StaffDetailsForm from "@/components/auth/StaffDetailsForm"
-import StudentDetailsForm from "@/components/auth/StudentDetailsForm"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { UserRound, GraduationCap, ArrowLeft } from "lucide-react";
+import StaffDetailsForm from "@/components/auth/StaffDetailsForm";
+import StudentDetailsForm from "@/components/auth/StudentDetailsForm";
 
 export default function RoleSelectionPage() {
-  const [role, setRole] = useState<"staff" | "student" | "">("")
-  const [profileCompleted, setProfileCompleted] = useState(false)
-  const router = useRouter()
+  const [role, setRole] = useState<"staff" | "student" | "">("");
+  const [profileCompleted, setProfileCompleted] = useState(false);
+  const router = useRouter();
+  const { data: session, update: updateSession } = useSession();
 
   useEffect(() => {
     // Check if user already has a profile
-    const savedProfile = localStorage.getItem('userProfile')
+    // const savedProfile = localStorage.getItem('userProfile')
+    let savedProfile = undefined;
     if (savedProfile) {
-      const profile = JSON.parse(savedProfile)
-      setRole(profile.role)
-      setProfileCompleted(true)
+      const profile = JSON.parse(savedProfile);
+      setRole(profile.role);
+      setProfileCompleted(true);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (profileCompleted) {
-      router.push(role === "student" ? "/student-dashboard" : "/staff-dashboard")
+      router.push(
+        role === "student" ? "/student-dashboard" : "/staff-dashboard",
+      );
     }
-  }, [profileCompleted, role, router])
+  }, [profileCompleted, role, router]);
 
-  const handleProfileComplete = (formData: any) => {
-    // Save profile data to localStorage
+  const handleProfileComplete = async (formData: any) => {
+    // Build the profile data (including modified name)
     const profileData = {
       role,
       ...formData,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+    };
+
+    // Save to localStorage
+    localStorage.setItem("profile", JSON.stringify(profileData));
+
+    // If a session exists, update it so the new name (split/pop/join result) is reflected
+    if (session && updateSession) {
+      await updateSession({
+        ...session,
+        user: {
+          ...session.user,
+          ...profileData,
+        },
+      });
     }
-    localStorage.setItem('userProfile', JSON.stringify(profileData))
-    setProfileCompleted(true)
-  }
+
+    setProfileCompleted(true);
+  };
 
   const handleRoleSelect = (selectedRole: "staff" | "student") => {
-    setRole(selectedRole)
-  }
+    setRole(selectedRole);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 p-4">
@@ -52,10 +77,9 @@ export default function RoleSelectionPage() {
             Complete Your Profile
           </CardTitle>
           <CardDescription className="text-center">
-            {!role 
+            {!role
               ? "Choose your role to personalize your experience"
-              : `Complete your ${role} profile details below`
-            }
+              : `Complete your ${role} profile details below`}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -105,5 +129,5 @@ export default function RoleSelectionPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

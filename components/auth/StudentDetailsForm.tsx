@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
 
 interface StudentDetailsFormProps {
   onComplete: (formData: any) => void;
@@ -10,16 +11,45 @@ export default function StudentDetailsForm({
   onComplete,
 }: StudentDetailsFormProps) {
   const [rollNumber, setRollNumber] = useState("");
-  const [name, setName] = useState("");
-  const [department, setDepartment] = useState("");
-  const [batch, setBatch] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { data: session, status } = useSession();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    let regex = /.([a-z]+)(\d{4})@/;
+    let email = session?.user.email!;
+    let name = session?.user.name!;
+    let temp = name.split(" ");
+    temp.pop();
+    let newname = temp.join(" ");
+    if (!email) {
+      console.error("EMAIL UNDEFINED WTF");
+      return;
+    }
+    const match = email.match(regex);
+    if (match) {
+      const department = match[1].toUpperCase();
+      const year = parseInt(match[2]);
+      console.log(`Name: ${newname}, Department: ${department}, Year: ${year}`);
+      const resp = {
+        role: "student",
+        rollNumber: rollNumber,
+        name: newname,
+        department: department,
+        batch: year,
+      };
+      setTimeout(() => {
+        console.log("Student profile submitted:", JSON.stringify(resp));
+        // localStorage.setItem("profile", JSON.stringify(resp));
+        setLoading(false);
+        onComplete(resp);
+      }, 1000);
+    } else {
+      console.log(`No match for: ${email}`);
+    }
 
     /*
       --- MOCK REQUEST ---
@@ -45,17 +75,6 @@ export default function StudentDetailsForm({
         }
       }
     */
-    setTimeout(() => {
-      console.log("Student profile submitted:", {
-        role: "student",
-        rollNumber,
-        name,
-        department,
-        batch,
-      });
-      setLoading(false);
-      onComplete(FormData);
-    }, 1000);
   };
 
   return (
@@ -69,36 +88,6 @@ export default function StudentDetailsForm({
             type="text"
             value={rollNumber}
             onChange={(e) => setRollNumber(e.target.value)}
-            className="w-full border rounded p-2"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full border rounded p-2"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Department</label>
-          <input
-            type="text"
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-            className="w-full border rounded p-2"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Batch</label>
-          <input
-            type="text"
-            value={batch}
-            onChange={(e) => setBatch(e.target.value)}
             className="w-full border rounded p-2"
             required
           />

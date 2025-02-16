@@ -10,22 +10,21 @@ const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt"
+    strategy: "jwt",
   },
   callbacks: {
     async jwt({ token, user }) {
-      // when the user is first created/signs in,
-      // add the role if it exists (e.g. after profile update) 
-      if (user?.role) {
-        token.role = user.role;
+      if (user) {
+        if (user.role) token.role = user.role;
+        if (user.name) token.name = user.name;
       }
       return token;
     },
     async session({ session, token }) {
-      // attach the role from the token (or default to staff)
       session.user = {
         ...session.user,
-        role: (token.role as "staff" | "student") || "staff",
+        name: token.name || session.user.name,
+        role: (token.role as "student" | "staff") || "student",
       };
       return session;
     },

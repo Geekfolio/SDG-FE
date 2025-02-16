@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
 
 interface StaffDetailsFormProps {
   onComplete: (formData: any) => void;
@@ -13,6 +14,7 @@ export default function StaffDetailsForm({
   const [department, setDepartment] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { data: session, status } = useSession();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +29,7 @@ export default function StaffDetailsForm({
         "userId": string, // fetched from session in a real app
         "role": "staff",
         "name": string,
+        "email": string,
         "department": string
       }
       Expected Response:
@@ -35,18 +38,22 @@ export default function StaffDetailsForm({
         "data": {
           "userId": string,
           "name": string,
+          "email": string,
           "department": string
         }
       }
     */
     setTimeout(() => {
-      console.log("Staff profile submitted:", {
+      const resp = {
         role: "staff",
-        name,
-        department,
-      });
+        name: name,
+        department: department,
+        email: session?.user.email,
+      };
+      console.log("Staff profile submitted:", JSON.stringify(resp));
+      // localStorage.setItem("profile", JSON.stringify(resp));
       setLoading(false);
-      onComplete(FormData);
+      onComplete(resp);
     }, 1000);
   };
 
