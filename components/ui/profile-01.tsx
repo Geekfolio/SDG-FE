@@ -13,7 +13,7 @@ interface MenuItem {
 
 const defaultProfile = {
   name: "Lorem Ipsum",
-  department: "CSE",
+  department: "DEFAULT",
   avatar: "https://shorturl.at/CI9p1",
 };
 
@@ -56,7 +56,10 @@ export default function Profile01() {
           <div className="mt-6">
             <button
               type="button"
-              onClick={() => signOut({ callbackUrl: "/" })}
+              onClick={() => {
+                signOut({ callbackUrl: "/" });
+                localStorage.removeItem("profile");
+              }}
               className="w-full flex items-center justify-between p-2
                               hover:bg-zinc-50 dark:hover:bg-zinc-800/50
                               rounded-lg transition-colors duration-200"

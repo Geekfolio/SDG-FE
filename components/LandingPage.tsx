@@ -74,7 +74,7 @@ const cards: InfoCard[] = [
 
 export default function LandingPage() {
   // State and hooks
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -84,7 +84,9 @@ export default function LandingPage() {
     if (session) {
       router.push(`${session.user.role}-dashboard`);
     } else if (store !== null) {
-      router.push(`${JSON.parse(store).role}-dashboard`);
+      const json = JSON.parse(store);
+      update({ ...json });
+      router.push(`${json.role}-dashboard`);
     }
   }, [session, router]);
 
