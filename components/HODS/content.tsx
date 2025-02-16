@@ -1,9 +1,5 @@
-import React from 'react'
+import React from "react";
 
 export default function () {
-  return (
-    <div>
-        vankam daa
-    </div>
-  )
+  return <div>vankam daa</div>;
 }

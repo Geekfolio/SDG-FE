@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Home,
@@ -14,17 +14,17 @@ import {
   Settings,
   HelpCircle,
   Menu,
-} from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
-import Image from "next/image"
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import Image from "next/image";
 
 // Define the navigation item type
 type NavItemType = {
-  href: string
-  label: string
-  icon: any
-}
+  href: string;
+  label: string;
+  icon: any;
+};
 
 // Setup the nav items for each role
 const adminNavItems: NavItemType[] = [
@@ -35,7 +35,7 @@ const adminNavItems: NavItemType[] = [
   { href: "/student-management", label: "Student Management", icon: Wallet },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
-]
+];
 
 const hodNavItems: NavItemType[] = [
   { href: "/dashboard", label: "Dashboard", icon: Home },
@@ -45,7 +45,7 @@ const hodNavItems: NavItemType[] = [
   { href: "/join-request", label: "Join Request", icon: HelpCircle },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
-]
+];
 
 const staffNavItems: NavItemType[] = [
   { href: "/staff-dashboard", label: "Dashboard", icon: Home },
@@ -54,59 +54,67 @@ const staffNavItems: NavItemType[] = [
   { href: "/join-request", label: "Join Request", icon: HelpCircle },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
-]
+];
 
 const studentNavItems: NavItemType[] = [
   { href: "/student-dashboard", label: "Dashboard", icon: Home },
   { href: "/events", label: "Events", icon: Video },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
-]
+];
 
 const VisitorNavItems: NavItemType[] = [
   { href: "/events", label: "Events", icon: Video },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
-]
+];
 
 interface SidebarProps {
-  role: "administrator" | "hod" | "staff" | "student"
+  role: "administrator" | "hod" | "staff" | "student";
 }
 
 export default function Sidebar({ role }: SidebarProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleNavigation = () => {
-    setIsMobileMenuOpen(false)
-  }
+    setIsMobileMenuOpen(false);
+  };
 
   // Determine which nav items to display based on the role
-  let navItems: NavItemType[]
+  let navItems: NavItemType[];
   switch (role) {
     case "administrator":
-      navItems = adminNavItems
-      break
+      navItems = adminNavItems;
+      break;
     case "hod":
-      navItems = hodNavItems
-      break
+      navItems = hodNavItems;
+      break;
     case "staff":
-      navItems = staffNavItems
-      break
+      navItems = staffNavItems;
+      break;
     case "student":
-      navItems = studentNavItems
-      break
+      navItems = studentNavItems;
+      break;
     default:
-      navItems = []
+      navItems = [];
   }
 
   const topNavItems = navItems.filter(
-    (item) => item.href !== "/settings" && item.href !== "/help"
-  )
+    (item) => item.href !== "/settings" && item.href !== "/help",
+  );
   const bottomNavItems = navItems.filter(
-    (item) => item.href === "/settings" || item.href === "/help"
-  )
+    (item) => item.href === "/settings" || item.href === "/help",
+  );
 
-  function NavItem({ href, icon: Icon, children }: { href: string; icon: any; children: React.ReactNode }) {
+  function NavItem({
+    href,
+    icon: Icon,
+    children,
+  }: {
+    href: string;
+    icon: any;
+    children: React.ReactNode;
+  }) {
     return (
       <Link
         href={href}
@@ -116,7 +124,7 @@ export default function Sidebar({ role }: SidebarProps) {
         <Icon className="h-4 w-4 mr-3 flex-shrink-0" />
         {children}
       </Link>
-    )
+    );
   }
 
   return (
@@ -197,5 +205,5 @@ export default function Sidebar({ role }: SidebarProps) {
         />
       )}
     </>
-  )
+  );
 }

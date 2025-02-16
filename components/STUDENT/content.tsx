@@ -1,12 +1,27 @@
-"use client"
+"use client";
 
-import { Trophy, Github, Globe, Linkedin, Mail, MapPin, School, Twitter } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import {
+  Trophy,
+  Github,
+  Globe,
+  Linkedin,
+  Mail,
+  MapPin,
+  School,
+  Twitter,
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 const platforms = [
   {
@@ -20,7 +35,7 @@ const platforms = [
   },
   { name: "CodeChef", progress: 0, rank: "SDE" },
   { name: "CodeForces", progress: 0, rank: "79" },
-]
+];
 
 const hackathonData = [
   { month: "Jan", participated: 4, won: 1 },
@@ -29,14 +44,15 @@ const hackathonData = [
   { month: "Apr", participated: 2, won: 1 },
   { month: "May", participated: 3, won: 0 },
   { month: "Jun", participated: 4, won: 2 },
-]
+];
 
 const hackathons = [
   {
     name: "Smart India Hackathon 2023",
     date: "August 15-16, 2023",
     position: "Winner",
-    description: "Built an AI-powered solution for agricultural yield prediction",
+    description:
+      "Built an AI-powered solution for agricultural yield prediction",
     tech: ["Python", "TensorFlow", "React", "Node.js"],
   },
   {
@@ -53,9 +69,9 @@ const hackathons = [
     description: "Created a platform for connecting NGOs with volunteers",
     tech: ["React", "Firebase", "Material UI", "Express"],
   },
-]
+];
 
-export default function() {
+export default function () {
   return (
     <div className="flex flex-col space-y-8">
       <Card>
@@ -88,7 +104,9 @@ export default function() {
             <div className="flex-grow space-y-2">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                <span className="text-sm">shreehari.aiml2023@citchennai.net</span>
+                <span className="text-sm">
+                  shreehari.aiml2023@citchennai.net
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
@@ -119,18 +137,26 @@ export default function() {
                     </span>
                   </div>
                   <Progress
-                    value={(platform.stats.easy.solved / platform.stats.easy.total) * 100}
+                    value={
+                      (platform.stats.easy.solved / platform.stats.easy.total) *
+                      100
+                    }
                     className="bg-green-200"
                   />
 
                   <div className="flex justify-between text-sm">
                     <span className="text-yellow-500">Medium</span>
                     <span>
-                      {platform.stats.medium.solved}/{platform.stats.medium.total}
+                      {platform.stats.medium.solved}/
+                      {platform.stats.medium.total}
                     </span>
                   </div>
                   <Progress
-                    value={(platform.stats.medium.solved / platform.stats.medium.total) * 100}
+                    value={
+                      (platform.stats.medium.solved /
+                        platform.stats.medium.total) *
+                      100
+                    }
                     className="bg-yellow-200"
                   />
 
@@ -141,18 +167,25 @@ export default function() {
                     </span>
                   </div>
                   <Progress
-                    value={(platform.stats.hard.solved / platform.stats.hard.total) * 100}
+                    value={
+                      (platform.stats.hard.solved / platform.stats.hard.total) *
+                      100
+                    }
                     className="bg-red-200"
                   />
 
                   <div className="mt-4 text-center">
-                    <span className="text-sm text-muted-foreground">Rank: {platform.rank}</span>
+                    <span className="text-sm text-muted-foreground">
+                      Rank: {platform.rank}
+                    </span>
                   </div>
                 </div>
               ) : (
                 <div className="text-center space-y-4">
                   <Progress value={platform.progress} />
-                  <span className="text-sm text-muted-foreground">Rank: {platform.rank}</span>
+                  <span className="text-sm text-muted-foreground">
+                    Rank: {platform.rank}
+                  </span>
                 </div>
               )}
             </CardContent>
@@ -184,12 +217,16 @@ export default function() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">{hackathon.name}</CardTitle>
-                  {hackathon.position === "Winner" && <Trophy className="h-5 w-5 text-yellow-500" />}
+                  {hackathon.position === "Winner" && (
+                    <Trophy className="h-5 w-5 text-yellow-500" />
+                  )}
                 </div>
                 <CardDescription>{hackathon.date}</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="mb-4 text-sm text-muted-foreground">{hackathon.description}</p>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  {hackathon.description}
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {hackathon.tech.map((tech) => (
                     <Badge key={tech} variant="secondary">
@@ -203,6 +240,5 @@ export default function() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

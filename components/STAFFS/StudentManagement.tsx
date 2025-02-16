@@ -1,10 +1,23 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState } from "react";
+import Link from "next/link";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Mock data for students
 const studentsData = Array.from({ length: 180 }, (_, i) => ({
@@ -15,18 +28,18 @@ const studentsData = Array.from({ length: 180 }, (_, i) => ({
   status: ["In Class", "On Duty", "Hackathon"][Math.floor(Math.random() * 3)],
   hackathonsParticipated: Math.floor(Math.random() * 10),
   hackathonsWon: Math.floor(Math.random() * 3),
-}))
+}));
 
 export default function () {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedClass, setSelectedClass] = useState("All")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedClass, setSelectedClass] = useState("All");
 
   const filteredStudents = studentsData.filter(
     (student) =>
       (student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase())) &&
       (selectedClass === "All" || student.class === selectedClass),
-  )
+  );
 
   return (
     <div className="space-y-4">
@@ -64,7 +77,10 @@ export default function () {
           {filteredStudents.map((student) => (
             <TableRow key={student.id}>
               <TableCell>
-                <Link href={`/student/${student.id}`} className="text-blue-500 hover:underline">
+                <Link
+                  href={`/student/${student.id}`}
+                  className="text-blue-500 hover:underline"
+                >
                   {student.rollNumber}
                 </Link>
               </TableCell>
@@ -78,6 +94,5 @@ export default function () {
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }
-

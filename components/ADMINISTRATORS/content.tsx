@@ -1,7 +1,7 @@
-import { Calendar, CreditCard, Code } from "lucide-react"
-import List01 from "./list-01"
-import List02 from "./list-02"
-import List03 from "./list-03"
+import { Calendar, CreditCard, Code } from "lucide-react";
+import List01 from "./list-01";
+import List02 from "./list-02";
+import List03 from "./list-03";
 
 export default function () {
   return (
@@ -35,6 +35,5 @@ export default function () {
         <List03 />
       </div>
     </div>
-  )
+  );
 }
-
