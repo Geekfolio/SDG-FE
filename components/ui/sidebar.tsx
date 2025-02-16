@@ -58,7 +58,7 @@ const staffNavItems: NavItemType[] = [
 
 const studentNavItems: NavItemType[] = [
   { href: "/student-dashboard", label: "Dashboard", icon: Home },
-  { href: "/events", label: "Events", icon: Video },
+  { href: "/student-event", label: "Events", icon: Video },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
 ];
