@@ -15,38 +15,28 @@ export default function AuthPage() {
   let content: React.ReactNode = null;
 
   if (status === "loading") {
-    content = (
-      <p className="text-center py-10">Loading…</p>
-    );
-  }
-
-  if (!session) {
+    content = <p className="text-center py-10">Loading…</p>;
+  } else if (!session) {
     content = (
       <div className="flex items-center justify-center h-screen">
         <Button onClick={() => signIn("google")}>Sign in with Google</Button>
       </div>
     );
-  }
-
-  if (!profileCompleted) {
-    if (!role) {
-      content = (
-        <div className="max-w-md mx-auto p-4 text-center">
-          <h1 className="text-2xl font-bold mb-4">Complete Your Profile</h1>
-          <p className="mb-4">Please select your role:</p>
-          <div className="flex justify-center gap-4">
-            <Button onClick={() => setRole("staff")}>Staff</Button>
-            <Button onClick={() => setRole("student")}>Student</Button>
-          </div>
+  } else if (!profileCompleted) {
+    content = !role ? (
+      <div className="max-w-md mx-auto p-4 text-center">
+        <h1 className="text-2xl font-bold mb-4">Complete Your Profile</h1>
+        <p className="mb-4">Please select your role:</p>
+        <div className="flex justify-center gap-4">
+          <Button onClick={() => setRole("staff")}>Staff</Button>
+          <Button onClick={() => setRole("student")}>Student</Button>
         </div>
-      );
-    } else {
-      content = role === "staff" ? (
-        <StaffDetailsForm onComplete={() => setProfileCompleted(true)} />
-      ) : (
-        <StudentDetailsForm onComplete={() => setProfileCompleted(true)} />
-      );
-    }
+      </div>
+    ) : role === "staff" ? (
+      <StaffDetailsForm onComplete={() => setProfileCompleted(true)} />
+    ) : (
+      <StudentDetailsForm onComplete={() => setProfileCompleted(true)} />
+    );
   }
 
   useEffect(() => {
