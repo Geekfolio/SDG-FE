@@ -22,6 +22,8 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import LeetCodeProgressCircle from "@/components/ui/LeetCodeProgressCircle";
+import { useSession } from "next-auth/react";
 
 const platforms = [
   {
@@ -72,6 +74,8 @@ const hackathons = [
 ];
 
 export default function () {
+  const { data: session, status } = useSession();
+
   return (
     <div className="flex flex-col space-y-8">
       <Card>
@@ -79,12 +83,16 @@ export default function () {
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex flex-col items-center space-y-4">
               <Avatar className="h-24 w-24">
-                <AvatarImage src="/placeholder.svg" />
+                <AvatarImage src={session?.user.image!} />
                 <AvatarFallback>ST</AvatarFallback>
               </Avatar>
               <div className="text-center">
-                <h3 className="text-xl font-semibold">Shreehari</h3>
-                <p className="text-sm text-muted-foreground">#Shreehari_S</p>
+                <h3 className="text-xl font-semibold">
+                  {session?.user.name || "Shreehari S"}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {session?.user.department || "CSE"}
+                </p>
               </div>
               <div className="flex gap-2">
                 <Button variant="ghost" size="icon">
@@ -105,7 +113,7 @@ export default function () {
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 <span className="text-sm">
-                  shreehari.aiml2023@citchennai.net
+                  {session?.user.email || "shreeharis.aiml2023@citchennai.net"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -128,8 +136,22 @@ export default function () {
               <CardTitle className="text-lg">{platform.name}</CardTitle>
             </CardHeader>
             <CardContent>
-              {"stats" in platform && platform.stats ? (
+              {platform.name === "LeetCode" && platform.stats ? (
+                <div className="flex flex-col items-center space-y-2">
+                  <LeetCodeProgressCircle
+                    easy={platform.stats.easy.solved}
+                    medium={platform.stats.medium.solved}
+                    hard={platform.stats.hard.solved}
+                  />
+                  <div className="mt-4 text-center">
+                    <span className="text-sm text-muted-foreground">
+                      Rank: {platform.rank}
+                    </span>
+                  </div>
+                </div>
+              ) : "stats" in platform && platform.stats ? (
                 <div className="space-y-2">
+                  {/* Existing progress bars for other platforms */}
                   <div className="flex justify-between text-sm">
                     <span className="text-green-500">Easy</span>
                     <span>
@@ -173,7 +195,6 @@ export default function () {
                     }
                     className="bg-red-200"
                   />
-
                   <div className="mt-4 text-center">
                     <span className="text-sm text-muted-foreground">
                       Rank: {platform.rank}

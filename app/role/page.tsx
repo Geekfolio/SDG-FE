@@ -40,9 +40,8 @@ export default function RoleSelectionPage() {
 
   const handleProfileComplete = async (formData: any) => {
     const profileData = {
-      role,
-      ...session,
       ...session?.user,
+      role, // ensure selected role is included/overrides if needed
       ...formData,
       timestamp: new Date().toISOString(),
     };

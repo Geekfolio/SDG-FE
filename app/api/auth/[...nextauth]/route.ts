@@ -35,7 +35,7 @@ const authOptions: NextAuthOptions = {
         role: (token.role as "student" | "staff") || "student",
         department: (token.department as string) || session.user.department,
         email: token.email || session.user.email,
-        image: token.picture || session.user.image,
+        image: (token.image as string) || token.picture || session.user.image,
       };
       return session;
     },
