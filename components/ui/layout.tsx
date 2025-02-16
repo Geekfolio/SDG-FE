@@ -16,7 +16,7 @@ export default function Layout({ children }: LayoutProps) {
   const [mounted, setMounted] = useState(false);
   const { data: session } = useSession();
   const currentRole = session?.user?.role || "staff";
-
+  
   useEffect(() => {
     setMounted(true);
   }, []);

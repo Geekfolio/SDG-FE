@@ -88,7 +88,7 @@ export default function TopNav() {
             sideOffset={8}
             className="w-[280px] sm:w-80 bg-background border-border rounded-lg shadow-lg"
           >
-            <Profile01 avatar="https://shorturl.at/CI9p1" />
+            <Profile01/>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
