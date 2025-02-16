@@ -23,6 +23,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import LeetCodeProgressCircle from "@/components/ui/LeetCodeProgressCircle";
+import PlatformCarousel from "@/components/STUDENT/PlatformCarousel";
 import { useSession } from "next-auth/react";
 
 const platforms = [
@@ -81,7 +82,8 @@ export default function () {
       <Card>
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-6">
-            <div className="flex flex-col items-center space-y-4">
+            {/* Left Column: Avatar, name, and social buttons */}
+            <div className="flex flex-col items-center space-y-4 md:w-1/3">
               <Avatar className="h-24 w-24">
                 <AvatarImage src={session?.user.image!} />
                 <AvatarFallback>ST</AvatarFallback>
@@ -109,7 +111,9 @@ export default function () {
                 </Button>
               </div>
             </div>
-            <div className="flex-grow space-y-2">
+
+            {/* Middle Column: Contact Details */}
+            <div className="flex flex-col space-y-2 md:w-1/3">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 <span className="text-sm">
@@ -125,94 +129,14 @@ export default function () {
                 <span className="text-sm">CIT</span>
               </div>
             </div>
+
+            {/* Right Column: PlatformCarousel */}
+            <div className="flex items-center justify-center md:w-1/3">
+              <PlatformCarousel />
+            </div>
           </div>
         </CardContent>
       </Card>
-
-      <div className="grid gap-4 md:grid-cols-3">
-        {platforms.map((platform) => (
-          <Card key={platform.name}>
-            <CardHeader>
-              <CardTitle className="text-lg">{platform.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {platform.name === "LeetCode" && platform.stats ? (
-                <div className="flex flex-col items-center space-y-2">
-                  <LeetCodeProgressCircle
-                    easy={platform.stats.easy.solved}
-                    medium={platform.stats.medium.solved}
-                    hard={platform.stats.hard.solved}
-                  />
-                  <div className="mt-4 text-center">
-                    <span className="text-sm text-muted-foreground">
-                      Rank: {platform.rank}
-                    </span>
-                  </div>
-                </div>
-              ) : "stats" in platform && platform.stats ? (
-                <div className="space-y-2">
-                  {/* Existing progress bars for other platforms */}
-                  <div className="flex justify-between text-sm">
-                    <span className="text-green-500">Easy</span>
-                    <span>
-                      {platform.stats.easy.solved}/{platform.stats.easy.total}
-                    </span>
-                  </div>
-                  <Progress
-                    value={
-                      (platform.stats.easy.solved / platform.stats.easy.total) *
-                      100
-                    }
-                    className="bg-green-200"
-                  />
-
-                  <div className="flex justify-between text-sm">
-                    <span className="text-yellow-500">Medium</span>
-                    <span>
-                      {platform.stats.medium.solved}/
-                      {platform.stats.medium.total}
-                    </span>
-                  </div>
-                  <Progress
-                    value={
-                      (platform.stats.medium.solved /
-                        platform.stats.medium.total) *
-                      100
-                    }
-                    className="bg-yellow-200"
-                  />
-
-                  <div className="flex justify-between text-sm">
-                    <span className="text-red-500">Hard</span>
-                    <span>
-                      {platform.stats.hard.solved}/{platform.stats.hard.total}
-                    </span>
-                  </div>
-                  <Progress
-                    value={
-                      (platform.stats.hard.solved / platform.stats.hard.total) *
-                      100
-                    }
-                    className="bg-red-200"
-                  />
-                  <div className="mt-4 text-center">
-                    <span className="text-sm text-muted-foreground">
-                      Rank: {platform.rank}
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center space-y-4">
-                  <Progress value={platform.progress} />
-                  <span className="text-sm text-muted-foreground">
-                    Rank: {platform.rank}
-                  </span>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
 
       <Card>
         <CardHeader>
