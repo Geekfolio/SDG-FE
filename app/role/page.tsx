@@ -19,12 +19,10 @@ export default function RoleSelectionPage() {
   const [role, setRole] = useState<"staff" | "student" | "">("");
   const [profileCompleted, setProfileCompleted] = useState(false);
   const router = useRouter();
-  const { data: session, update: updateSession } = useSession();
+  const { data: session, status, update } = useSession();
 
   useEffect(() => {
-    // Check if user already has a profile
-    // const savedProfile = localStorage.getItem('userProfile')
-    let savedProfile = undefined;
+    const savedProfile = localStorage.getItem("profile");
     if (savedProfile) {
       const profile = JSON.parse(savedProfile);
       setRole(profile.role);
@@ -41,25 +39,16 @@ export default function RoleSelectionPage() {
   }, [profileCompleted, role, router]);
 
   const handleProfileComplete = async (formData: any) => {
-    // Build the profile data (including modified name)
     const profileData = {
       role,
       ...formData,
       timestamp: new Date().toISOString(),
     };
 
-    // Save to localStorage
     localStorage.setItem("profile", JSON.stringify(profileData));
 
-    // If a session exists, update it so the new name (split/pop/join result) is reflected
-    if (session && updateSession) {
-      await updateSession({
-        ...session,
-        user: {
-          ...session.user,
-          ...profileData,
-        },
-      });
+    if (session) {
+      await update({ ...profileData });
     }
 
     setProfileCompleted(true);
