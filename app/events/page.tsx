@@ -1,5 +1,5 @@
 import Layout from "@/components/ui/layout";
-import { EventManagement } from "./manage";
+import { EventManagement } from "../../components/EVENTS/manage";
 import React from "react";
 
 export default function Events() {

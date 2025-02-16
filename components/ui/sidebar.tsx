@@ -70,7 +70,7 @@ const VisitorNavItems: NavItemType[] = [
 ];
 
 interface SidebarProps {
-  role: "administrator" | "hod" | "staff" | "student";
+  role: "administrator" | "hod" | "staff" | "student" | "";
 }
 
 export default function Sidebar({ role }: SidebarProps) {

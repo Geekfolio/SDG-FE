@@ -1,37 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import {
-  PlusCircle,
-  Calendar,
-  Users,
-  Trophy,
-  Clock,
-  ChevronDown,
-} from "lucide-react";
+import {  PlusCircle,  Calendar,  Users,  Trophy,  Clock,  ChevronDown,} from "lucide-react";
 import { Leaderboard } from "@/components/EVENTS/leaderboard";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import {  Card,  CardContent,  CardDescription,  CardFooter,  CardHeader,  CardTitle,} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import {  Select,  SelectContent,  SelectItem,  SelectTrigger,  SelectValue,} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { toast, ToastPosition } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-// Mock data for live events
+// Mock data for live events (will be replaced with data from DB)
 const liveEvents = [
   {
     id: 1,
@@ -95,8 +77,8 @@ export function EventManagement() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {liveEvents.map((event) => (
-          <LiveEventCard 
-            key={event.id} 
+          <LiveEventCard
+            key={event.id}
             event={event}
             setSelectedLeaderboardId={setSelectedLeaderboardId}
           />
@@ -107,6 +89,54 @@ export function EventManagement() {
 }
 
 function EventCreationForm({ onClose }: { onClose: () => void }) {
+  const [eventName, setEventName] = useState("");
+  const [eventDescription, setEventDescription] = useState("");
+  const [teamSize, setTeamSize] = useState(1);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [eventType, setEventType] = useState("");
+  const [eventScope, setEventScope] = useState("");
+  const [liveTracking, setLiveTracking] = useState(false);
+
+  const handleSubmit = async () => {
+    try {
+      const eventData = {
+        name: eventName,
+        description: eventDescription,
+        teamSize: teamSize,
+        startDate: startDate,
+        endDate: endDate,
+        eventType: eventType,
+        eventScope: eventScope,
+        liveTracking: liveTracking,
+      };
+
+      const response = await fetch("/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(eventData),
+      });
+
+      if (response.ok) {
+        toast.success("Event created successfully!", {
+          position: 'top-right' as ToastPosition
+        });
+        onClose(); // Close the form after successful submission
+      } else {
+        toast.error("Error creating event. Please try again.", {
+          position: 'top-right' as ToastPosition
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Error creating event. Something went wrong!", {
+        position: 'top-right' as ToastPosition
+      });
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -119,43 +149,67 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
         <form className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="event-name">Event Name</Label>
-            <Input id="event-name" placeholder="Enter event name" />
+            <Input
+              id="event-name"
+              placeholder="Enter event name"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="event-description">Event Description</Label>
             <Textarea
               id="event-description"
               placeholder="Describe your event"
+              value={eventDescription}
+              onChange={(e) => setEventDescription(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="team-size">Team Size</Label>
+            <Textarea
+              id="team-size"
+              placeholder="Describe your event"
+              value={teamSize}
+              onChange={(e) => setTeamSize(Number(e.target.value))}
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="start-date">Start Date</Label>
-              <Input id="start-date" type="datetime-local" />
+              <Input
+                id="start-date"
+                type="datetime-local"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="end-date">End Date</Label>
-              <Input id="end-date" type="datetime-local" />
+              <Input
+                id="end-date"
+                type="datetime-local"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
             </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="event-type">Event Type</Label>
-            <Select>
+            <Select onValueChange={(value) => setEventType(value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Select event type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="hackathon">Hackathon</SelectItem>
-                <SelectItem value="coding-challenge">
-                  Coding Challenge
-                </SelectItem>
+                <SelectItem value="coding-challenge">Coding Challenge</SelectItem>
                 <SelectItem value="workshop">Workshop</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="event-scope">Event Scope</Label>
-            <Select>
+            <Select onValueChange={(value) => setEventScope(value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Select event scope" />
               </SelectTrigger>
@@ -167,7 +221,11 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
             </Select>
           </div>
           <div className="flex items-center space-x-2">
-            <Switch id="live-tracking" />
+            <Switch
+              id="live-tracking"
+              checked={liveTracking}
+              onCheckedChange={(checked) => setLiveTracking(checked)}
+            />
             <Label htmlFor="live-tracking">Enable Live Tracking</Label>
           </div>
         </form>
@@ -176,16 +234,16 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
         <Button variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button>Create Event</Button>
+        <Button onClick={handleSubmit}>Create Event</Button>
       </CardFooter>
     </Card>
   );
 }
 
-function LiveEventCard({ 
+function LiveEventCard({
   event,
-  setSelectedLeaderboardId
-}: { 
+  setSelectedLeaderboardId,
+}: {
   event: (typeof liveEvents)[number];
   setSelectedLeaderboardId: (id: number) => void;
 }) {

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 interface StaffDetailsFormProps {
-  onComplete: () => void;
+  onComplete: (formData: any) => void;
 }
 
 export default function StaffDetailsForm({
@@ -46,7 +46,7 @@ export default function StaffDetailsForm({
         department,
       });
       setLoading(false);
-      onComplete();
+      onComplete(FormData);
     }, 1000);
   };
 
