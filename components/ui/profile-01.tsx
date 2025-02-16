@@ -1,4 +1,5 @@
 import { LogOut } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,26 +11,24 @@ interface MenuItem {
   external?: boolean;
 }
 
-interface Profile01Props {
-  name: string;
-  role: string;
-  avatar: string;
-  subscription?: string;
-}
-
 const defaultProfile = {
   name: "Eugene An",
-  role: "Prompt Engineer",
+  department: "CSE",
   avatar: "https://shorturl.at/CI9p1",
-  subscription: "Free Trial",
-} satisfies Required<Profile01Props>;
+};
 
-export default function Profile01({
-  name = defaultProfile.name,
-  role = defaultProfile.role,
-  avatar = defaultProfile.avatar,
-  subscription = defaultProfile.subscription,
-}: Partial<Profile01Props> = defaultProfile) {
+export default function Profile01() {
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  const name = session?.user?.name || defaultProfile.name;
+  // Assuming the session holds a "department" property.
+  const department =
+    (session?.user as any)?.department || defaultProfile.department;
+  const avatar = session?.user?.image || defaultProfile.avatar;
 
   return (
     <div className="w-full max-w-sm mx-auto">
@@ -52,14 +51,15 @@ export default function Profile01({
               <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
                 {name}
               </h2>
-              <p className="text-zinc-600 dark:text-zinc-400">{role}</p>
+              <p className="text-zinc-600 dark:text-zinc-400">{department}</p>
             </div>
           </div>
           <div className="mt-6">
             <button
               type="button"
-              className="w-full flex items-center justify-between p-2 
-                              hover:bg-zinc-50 dark:hover:bg-zinc-800/50 
+              onClick={() => signOut()}
+              className="w-full flex items-center justify-between p-2
+                              hover:bg-zinc-50 dark:hover:bg-zinc-800/50
                               rounded-lg transition-colors duration-200"
             >
               <div className="flex items-center gap-2">
