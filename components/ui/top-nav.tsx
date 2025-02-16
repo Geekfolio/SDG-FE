@@ -12,6 +12,7 @@ import Link from "next/link";
 import { ThemeToggle } from "../theme-toggle";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
+import { useSession } from "next-auth/react";
 
 interface BreadcrumbItem {
   label: string;
@@ -20,6 +21,7 @@ interface BreadcrumbItem {
 
 export default function TopNav() {
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   const breadcrumbs = useMemo(() => {
     const items: BreadcrumbItem[] = [{ label: "X-Helios", href: "/" }];
@@ -76,7 +78,7 @@ export default function TopNav() {
         <DropdownMenu>
           <DropdownMenuTrigger className="focus:outline-none">
             <Image
-              src="https://shorturl.at/CI9p1"
+              src={session?.user?.image || "https://shorturl.at/CI9p1"}
               alt="User avatar"
               width={28}
               height={28}

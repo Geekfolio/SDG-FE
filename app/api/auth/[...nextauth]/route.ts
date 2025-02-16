@@ -23,6 +23,8 @@ const authOptions: NextAuthOptions = {
         if (user.role) token.role = user.role;
         if (user.name) token.name = user.name;
         if (user.department) token.department = user.department as string;
+        if (user.email) token.email = user.email;
+        if (user.image) token.picture = user.image;
       }
       return token;
     },
@@ -32,6 +34,8 @@ const authOptions: NextAuthOptions = {
         name: token.name || session.user.name,
         role: (token.role as "student" | "staff") || "student",
         department: (token.department as string) || session.user.department,
+        email: token.email || session.user.email,
+        image: token.picture || session.user.image,
       };
       return session;
     },
