@@ -53,8 +53,6 @@ export default function AuthPage() {
         },
       );
       console.log("Signup response:", response.data);
-      // On success, you might want to redirect or automatically switch to login
-      router.push("/dashboard");
     } catch (err: any) {
       setError(err.response?.data?.message || "Signup failed");
       setLoading(false);
@@ -76,8 +74,24 @@ export default function AuthPage() {
         },
       );
       console.log("Login response:", response.data);
-      // On successful login, redirect accordingly
-      router.push("/dashboard");
+
+      const userole = (response.data.data.role).toLowerCase();
+      console.log(userole);
+      console.log("shreehari")
+      if(userole === "admin"){
+        router.push("/dashboard");
+      }
+      else if(userole === "hod"){
+        router.push("/dashboard");
+      }
+      else if(userole === "staff"){
+        router.push("/staff-dashboard");
+      }
+      else if(userole === "student"){
+        router.push("/student-dashboard");
+      }else{
+        router.push("/");
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
       setLoading(false);
