@@ -13,10 +13,16 @@ const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === "update") {
+        // console.log("TRIGGER UPDATE");
+        token = { ...session };
+      }
+      console.log(token);
       if (user) {
         if (user.role) token.role = user.role;
         if (user.name) token.name = user.name;
+        if (user.department) token.department = user.department as string;
       }
       return token;
     },
@@ -25,6 +31,7 @@ const authOptions: NextAuthOptions = {
         ...session.user,
         name: token.name || session.user.name,
         role: (token.role as "student" | "staff") || "student",
+        department: (token.department as string) || session.user.department,
       };
       return session;
     },
