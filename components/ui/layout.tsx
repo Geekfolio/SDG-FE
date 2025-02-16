@@ -5,6 +5,7 @@ import Sidebar from "../ui/sidebar";
 import TopNav from "../ui/top-nav";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface LayoutProps {
   children: ReactNode;
@@ -13,6 +14,8 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { data: session } = useSession();
+  const currentRole = session?.user?.role || "staff";
 
   useEffect(() => {
     setMounted(true);
@@ -24,7 +27,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className={`flex h-screen ${theme === "dark" ? "dark" : ""}`}>
-      <Sidebar role="staff" />
+      <Sidebar role={currentRole} />
       <div className="w-full flex flex-1 flex-col">
         <header className="h-16 border-b border-gray-200 dark:border-[#1F1F23]">
           <TopNav />
