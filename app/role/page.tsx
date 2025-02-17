@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { UserRound, GraduationCap, ArrowLeft } from "lucide-react";
 import StaffDetailsForm from "@/components/auth/StaffDetailsForm";
 import StudentDetailsForm from "@/components/auth/StudentDetailsForm";
+import { User } from "next-auth";
 
 export default function RoleSelectionPage() {
   const [role, setRole] = useState<"staff" | "student" | "">("");
@@ -38,7 +39,7 @@ export default function RoleSelectionPage() {
     }
   }, [profileCompleted, role, router]);
 
-  const handleProfileComplete = async (formData: any) => {
+  const handleProfileComplete = async (formData: User) => {
     const profileData = {
       ...session?.user,
       role, // ensure selected role is included/overrides if needed
@@ -47,6 +48,17 @@ export default function RoleSelectionPage() {
     };
 
     localStorage.setItem("profile", JSON.stringify(profileData));
+    await fetch(`http://localhost:8080/user/register`, {
+      method: "POST",
+      body: JSON.stringify({
+        name: profileData.name,
+        reg: profileData.rollNumber,
+        email: profileData.email,
+        department: profileData.department,
+        batch: profileData.batch,
+        authority: profileData.role == "student" ? 1 : 2,
+      }),
+    });
 
     if (session) {
       await update({ ...profileData });

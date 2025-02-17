@@ -14,5 +14,7 @@ declare module "next-auth" {
   interface User {
     role?: "staff" | "student";
     department?: string | null;
+    batch?: Number | null;
+    rollNumber?: string | null;
   }
 }

@@ -31,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import { useSession } from "next-auth/react";
 
 interface Event {
   id: number;
@@ -56,11 +57,12 @@ export default function ProfessionalEvents() {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const { data: session, status } = useSession();
 
   // Registration state fields
   const [teamName, setTeamName] = useState("");
   const [teamMembers, setTeamMembers] = useState("");
-  const [teamEmail, setTeamEmail] = useState("");
+  const [teamEmail, setTeamEmail] = useState(session?.user.email!);
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [formErrors, setFormErrors] = useState({
@@ -184,7 +186,8 @@ export default function ProfessionalEvents() {
         );
         setTeamName("");
         setTeamMembers("");
-        setTeamEmail("");
+        console.log("EMAIL", session?.user.email);
+        setTeamEmail(session?.user.email!);
         setSelectedEvent(null);
       } else {
         toast.error("Error during registration.", {
@@ -463,9 +466,8 @@ export default function ProfessionalEvents() {
                     <Input
                       id="team-email"
                       type="email"
-                      placeholder="Enter your email"
                       value={teamEmail}
-                      onChange={(e) => setTeamEmail(e.target.value)}
+                      disabled={true}
                       className={`w-full ${formErrors.teamEmail ? "border-red-500 dark:border-red-500" : ""}`}
                     />
                     {formErrors.teamEmail && (
