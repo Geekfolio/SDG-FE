@@ -329,13 +329,12 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
       toast.error("Please fill in all required fields", { position: "top-right" as ToastPosition });
       return;
     }
-
+  
     setIsSubmitting(true);
-
-    // Convert datetime-local input (YYYY-MM-DDTHH:mm) into "YYYY-MM-DD HH:mm:ss" format.
-    const formattedStartDate = startDate ? startDate.replace("T", " ") + ":00" : "";
-    const formattedEndDate = endDate ? endDate.replace("T", " ") + ":00" : "";
-
+  
+    const formattedStartDate = startDate.replace("T", " ") + ":00";
+    const formattedEndDate = endDate.replace("T", " ") + ":00";
+  
     try {
       const eventData = {
         name: eventName,
@@ -349,30 +348,28 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
         departments: deptArray.map((dept) => dept.toUpperCase()),
         years: yearArray.map((year) => parseInt(year, 10)),
       };
-
-      // Simulate API call for demo purposes
-      setTimeout(() => {
-        toast.success("Event created successfully!", { position: "top-right" as ToastPosition });
-        setIsSubmitting(false);
-        onClose();
-      }, 1500);
-
+  
       const response = await fetch("http://localhost:8080/events/create", {
         method: "POST",
+        mode: "cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(eventData),
       });
-
+  
       if (response.ok) {
+        const data = await response.json();
+        console.log("API Response:", data);
         toast.success("Event created successfully!", { position: "top-right" as ToastPosition });
         onClose();
       } else {
+        const errorText = await response.text();
+        console.error("Server Error:", errorText);
         toast.error("Error creating event. Please try again.", { position: "top-right" as ToastPosition });
       }
-    
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Error creating event. Something went wrong!", { position: "top-right" as ToastPosition });
+    } finally {
       setIsSubmitting(false);
     }
   };
