@@ -101,48 +101,14 @@ const LeetCodeProgressCircle: React.FC<LeetCodeProgressCircleProps> = ({
             alignItems: "center",
             marginBottom: "0.5rem",
           }}
-        >
-          <span
-            style={{
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              background: "green",
-              marginRight: "0.5rem",
-            }}
-          ></span>
-          <span>{easy} Easy</span>
-        </div>
+        ></div>
         <div
           style={{
             display: "flex",
             alignItems: "center",
             marginBottom: "0.5rem",
           }}
-        >
-          <span
-            style={{
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              background: "orange",
-              marginRight: "0.5rem",
-            }}
-          ></span>
-          <span>{medium} Medium</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <span
-            style={{
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              background: "red",
-              marginRight: "0.5rem",
-            }}
-          ></span>
-          <span>{hard} Hard</span>
-        </div>
+        ></div>
       </div>
     </div>
   );
