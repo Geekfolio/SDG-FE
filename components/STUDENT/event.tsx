@@ -59,6 +59,11 @@ export default function ProfessionalEvents() {
   const [searchQuery, setSearchQuery] = useState("");
   const { data: session, status } = useSession();
 
+  const [registeredEvents, setRegisteredEvents] = useState<Event[]>([]);
+  const [feedbackEvent, setFeedbackEvent] = useState<Event | null>(null);
+  const [rating, setRating] = useState<number>(0);
+  const [feedbackText, setFeedbackText] = useState<string>("");
+
   // Registration state fields
   const [teamName, setTeamName] = useState("");
   const [teamMembers, setTeamMembers] = useState("");
@@ -121,6 +126,58 @@ export default function ProfessionalEvents() {
     };
     fetchEvents();
   }, []);
+
+  useEffect(() => {
+    if (filter === "registered" && session?.user?.email) {
+      const fetchRegisteredEvents = async () => {
+        setIsLoading(true);
+        try {
+          const res = await fetch(
+            `http://localhost:8080/events/get-registered?email=${session.user.email}`,
+          );
+          if (res.ok) {
+            const text = await res.text();
+            let data;
+            try {
+              data = JSON.parse(text);
+            } catch (error) {
+              // In case the response uses single quotes
+              data = JSON.parse(text.replace(/'/g, '"'));
+            }
+            const enhancedRegisteredEvents = data.map((event: Event) => ({
+              ...event,
+              organization:
+                event.organization ||
+                ["TechCorp", "Microsoft", "Google", "Amazon", "IEEE"][
+                  Math.floor(Math.random() * 5)
+                ],
+              logo: event.logo,
+              prizes:
+                event.prizes ||
+                "$" + (Math.floor(Math.random() * 10) + 1) * 1000,
+              registrations_filled:
+                event.registrations_filled ||
+                Math.floor(Math.random() * 80) + 10,
+            }));
+            setRegisteredEvents(enhancedRegisteredEvents);
+          } else {
+            toast.error("Failed to fetch registered events", {
+              position: "top-right" as ToastPosition,
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching registered events:", error);
+          toast.error("Error fetching registered events", {
+            position: "top-right" as ToastPosition,
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchRegisteredEvents();
+    }
+  }, [filter, session?.user?.email]);
 
   const validateForm = () => {
     let valid = true;
@@ -202,6 +259,41 @@ export default function ProfessionalEvents() {
     }
   };
 
+  const handleFeedbackSubmit = async () => {
+    if (!feedbackEvent) return;
+    const payload = {
+      event_id: feedbackEvent.id,
+      email_id: session?.user?.email,
+      rating,
+      review: feedbackText,
+    };
+
+    try {
+      const res = await fetch("http://localhost:8080/events/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        toast.success("Feedback submitted successfully", {
+          position: "top-right" as ToastPosition,
+        });
+        setFeedbackEvent(null);
+        setRating(0);
+        setFeedbackText("");
+      } else {
+        toast.error("Feedback submission failed", {
+          position: "top-right" as ToastPosition,
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      toast.error("Feedback submission failed", {
+        position: "top-right" as ToastPosition,
+      });
+    }
+  };
+
   const getStatusColor = (status: string) => {
     const statusLower = status.toLowerCase();
     if (statusLower.includes("open")) return "success";
@@ -235,6 +327,21 @@ export default function ProfessionalEvents() {
 
     return true;
   });
+
+  const displayedEvents =
+    filter === "registered"
+      ? registeredEvents.filter((ev) => {
+          if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            return (
+              ev.name.toLowerCase().includes(query) ||
+              ev.event_type.toLowerCase().includes(query) ||
+              ev.organization?.toLowerCase().includes(query)
+            );
+          }
+          return true;
+        })
+      : filteredEvents;
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
@@ -544,20 +651,16 @@ export default function ProfessionalEvents() {
         ) : (
           <>
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-              <Tabs defaultValue="all" className="w-full max-w-md">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="all" onClick={() => setFilter("all")}>
-                    All Events
-                  </TabsTrigger>
-                  <TabsTrigger value="open" onClick={() => setFilter("open")}>
-                    Open Registration
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="closed"
-                    onClick={() => setFilter("closed")}
-                  >
-                    Closed
-                  </TabsTrigger>
+              <Tabs
+                defaultValue="all"
+                onValueChange={(value) => setFilter(value)}
+                className="w-full max-w-md"
+              >
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="all">All Events</TabsTrigger>
+                  <TabsTrigger value="open">Open</TabsTrigger>
+                  <TabsTrigger value="closed">Closed</TabsTrigger>
+                  <TabsTrigger value="registered">Registered</TabsTrigger>
                 </TabsList>
               </Tabs>
 
@@ -589,9 +692,9 @@ export default function ProfessionalEvents() {
                   </Card>
                 ))}
               </div>
-            ) : filteredEvents.length > 0 ? (
+            ) : displayedEvents.length > 0 ? (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredEvents.map((ev) => (
+                {displayedEvents.map((ev) => (
                   <Card
                     key={ev.id}
                     className="shadow-md hover:shadow-xl transition-shadow overflow-hidden border dark:border-gray-700 h-full flex flex-col"
@@ -666,19 +769,34 @@ export default function ProfessionalEvents() {
                     </CardHeader>
 
                     <CardFooter className="pt-2 border-t dark:border-gray-700 mt-auto">
-                      <Button
-                        onClick={() => setSelectedEvent(ev)}
-                        disabled={!ev.status.toLowerCase().includes("open")}
-                        className={`w-full ${
-                          ev.status.toLowerCase().includes("open")
-                            ? "bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                            : ""
-                        }`}
-                      >
-                        {ev.status.toLowerCase().includes("open")
-                          ? "Register Now"
-                          : "Closed"}
-                      </Button>
+                      {filter === "registered" ? (
+                        new Date(ev.start) <= new Date() ? (
+                          <Button
+                            onClick={() => setFeedbackEvent(ev)}
+                            className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                          >
+                            Feedback
+                          </Button>
+                        ) : (
+                          <Button disabled className="w-full">
+                            Already Registered
+                          </Button>
+                        )
+                      ) : (
+                        <Button
+                          onClick={() => setSelectedEvent(ev)}
+                          disabled={!ev.status.toLowerCase().includes("open")}
+                          className={`w-full ${
+                            ev.status.toLowerCase().includes("open")
+                              ? "bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                              : ""
+                          }`}
+                        >
+                          {ev.status.toLowerCase().includes("open")
+                            ? "Register Now"
+                            : "Closed"}
+                        </Button>
+                      )}
                     </CardFooter>
                   </Card>
                 ))}
@@ -708,6 +826,56 @@ export default function ProfessionalEvents() {
           </>
         )}
       </div>
+      {feedbackEvent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold">
+                Feedback for {feedbackEvent.name}
+              </h3>
+              <button
+                onClick={() => setFeedbackEvent(null)}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                X
+              </button>
+            </div>
+            <div className="mb-4">
+              <Label className="block text-sm font-medium mb-2">
+                Rating (1 to 5)
+              </Label>
+              <Input
+                type="number"
+                min="1"
+                max="5"
+                value={rating}
+                onChange={(e) => setRating(Number(e.target.value))}
+              />
+            </div>
+            <div className="mb-4">
+              <Label className="block text-sm font-medium mb-2">
+                Additional Feedback
+              </Label>
+              <Textarea
+                value={feedbackText}
+                onChange={(e) => setFeedbackText(e.target.value)}
+                rows={4}
+              />
+            </div>
+            <div className="flex justify-end gap-4">
+              <Button variant="outline" onClick={() => setFeedbackEvent(null)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleFeedbackSubmit}
+                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+              >
+                Submit Feedback
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
