@@ -135,7 +135,7 @@ export default function ProfessionalEvents() {
         setIsLoading(true);
         try {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/events?email=${session.user.email}`,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/registrations?email=${session.user.email}`,
           );
           if (res.ok) {
             const text = await res.text();
@@ -143,7 +143,6 @@ export default function ProfessionalEvents() {
             try {
               data = JSON.parse(text);
             } catch (error) {
-              // In case the response uses single quotes
               data = JSON.parse(text.replace(/'/g, '"'));
             }
             const enhancedRegisteredEvents = data.map((event: Event) => ({
