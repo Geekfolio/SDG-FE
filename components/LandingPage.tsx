@@ -97,9 +97,9 @@ export default function LandingPage() {
           }
           localStorage.setItem("profile", JSON.stringify(data.data));
           if ("role" in data.data && data.data.role === "student") {
-            router.push("/student-dashboard");
+            router.push("/student/dashboard");
           } else if ("role" in data.data && data.data.role === "staff") {
-            router.push("/staff-dashboard");
+            router.push("/staff/dashboard");
           }
           setRegistrationComplete(true);
         })

@@ -48,17 +48,17 @@ const hodNavItems: NavItemType[] = [
 ];
 
 const staffNavItems: NavItemType[] = [
-  { href: "/staff-dashboard", label: "Dashboard", icon: Home },
-  { href: "/events", label: "Event Creation", icon: BarChart2 },
-  { href: "/student-management", label: "Student Management", icon: Receipt },
+  { href: "/staff/dashboard", label: "Dashboard", icon: Home },
+  { href: "/staff/events", label: "Event Creation", icon: BarChart2 },
+  { href: "/staff/manage", label: "Student Management", icon: Receipt },
   // { href: "/join-request", label: "Join Request", icon: HelpCircle },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
 ];
 
 const studentNavItems: NavItemType[] = [
-  { href: "/student-dashboard", label: "Dashboard", icon: Home },
-  { href: "/student-event", label: "Events", icon: Video },
+  { href: "/student/dashboard", label: "Dashboard", icon: Home },
+  { href: "/student/events", label: "Events", icon: Video },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
 ];
