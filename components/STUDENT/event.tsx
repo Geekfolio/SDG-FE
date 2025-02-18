@@ -82,7 +82,9 @@ export default function ProfessionalEvents() {
     const fetchEvents = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch("http://localhost:8080/events");
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/events`,
+        );
         if (res.ok) {
           const text = await res.text();
           let data;
@@ -133,7 +135,7 @@ export default function ProfessionalEvents() {
         setIsLoading(true);
         try {
           const res = await fetch(
-            `http://localhost:8080/events/get-registered?email=${session.user.email}`,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/events?email=${session.user.email}`,
           );
           if (res.ok) {
             const text = await res.text();
@@ -228,11 +230,14 @@ export default function ProfessionalEvents() {
     };
 
     try {
-      const res = await fetch("http://localhost:8080/events/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
 
       if (res.ok) {
         toast.success(
@@ -269,11 +274,14 @@ export default function ProfessionalEvents() {
     };
 
     try {
-      const res = await fetch("http://localhost:8080/events/feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/feedback`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
       if (res.ok) {
         toast.success("Feedback submitted successfully", {
           position: "top-right" as ToastPosition,
