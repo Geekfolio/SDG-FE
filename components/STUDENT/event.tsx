@@ -221,12 +221,10 @@ export default function ProfessionalEvents() {
     if (!selectedEvent || !validateForm()) return;
 
     const payload = {
-      email: teamEmail,
+      student_mail: teamEmail,
       team_name: teamName,
       team_members: teamMembers,
       event_name: selectedEvent.name,
-      event_date: selectedEvent.start,
-      event_id: selectedEvent.id,
     };
 
     try {
@@ -267,8 +265,8 @@ export default function ProfessionalEvents() {
   const handleFeedbackSubmit = async () => {
     if (!feedbackEvent) return;
     const payload = {
-      event_id: feedbackEvent.id,
-      email_id: session?.user?.email,
+      event_name: feedbackEvent.name,
+      student_mail: session?.user?.email,
       rating,
       review: feedbackText,
     };
