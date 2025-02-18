@@ -42,7 +42,7 @@ const hodNavItems: NavItemType[] = [
   { href: "/events", label: "Event Creation", icon: BarChart2 },
   { href: "/staff-management", label: "Staff Management", icon: Folder },
   { href: "/student-management", label: "Student Management", icon: Wallet },
-  { href: "/join-request", label: "Join Request", icon: HelpCircle },
+  // { href: "/join-request", label: "Join Request", icon: HelpCircle },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
 ];
@@ -51,7 +51,7 @@ const staffNavItems: NavItemType[] = [
   { href: "/staff-dashboard", label: "Dashboard", icon: Home },
   { href: "/events", label: "Event Creation", icon: BarChart2 },
   { href: "/student-management", label: "Student Management", icon: Receipt },
-  { href: "/join-request", label: "Join Request", icon: HelpCircle },
+  // { href: "/join-request", label: "Join Request", icon: HelpCircle },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
 ];
