@@ -1,4 +1,4 @@
-import Content from "@/components/STAFFS/content";
+import Content from "@/components/staffs/content";
 import Layout from "@/components/ui/layout";
 import React from "react";
 

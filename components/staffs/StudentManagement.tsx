@@ -299,19 +299,6 @@ export default function StudentManagement() {
     }, 2000);
   };
 
-  const exportToPowerPoint = () => {
-    setIsExporting(true);
-    
-    setTimeout(() => {
-      // Simulate export process
-      toast({
-        title: "Export Successful",
-        description: "Analytics data has been exported to PowerPoint",
-      });
-      setIsExporting(false);
-    }, 2000);
-  };
-
   // Animation variants
   interface RowVariant {
     [key: string]: any;
@@ -698,10 +685,6 @@ export default function StudentManagement() {
               <DropdownMenuItem onClick={exportToExcel} className="flex items-center gap-2">
                 <FileSpreadsheet className="w-4 h-4" />
                 <span>Export to Excel</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={exportToPowerPoint} className="flex items-center gap-2">
-                <FileText className="w-4 h-4" />
-                <span>Export to PowerPoint</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -1155,26 +1138,6 @@ export default function StudentManagement() {
                     Status
                   </Button>
                 </div>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={exportToPowerPoint}
-                  className="flex items-center gap-1"
-                  disabled={isExporting}
-                >
-                  {isExporting ? (
-                    <>
-                      <RefreshCw className="h-4 w-4 animate-spin" />
-                      Exporting...
-                    </>
-                  ) : (
-                    <>
-                      <Download className="h-4 w-4" />
-                      Export as PPT
-                    </>
-                  )}
-                </Button>
               </div>
               
               <div className="relative h-96 border rounded-md bg-gradient-to-br from-gray-50 to-white p-4">

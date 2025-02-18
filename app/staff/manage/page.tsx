@@ -1,4 +1,4 @@
-import StudentManagement from "@/components/STAFFS/StudentManagement";
+import StudentManagement from "@/components/staffs/StudentManagement";
 import Layout from "@/components/ui/layout";
 import React from "react";
 

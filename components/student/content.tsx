@@ -38,7 +38,7 @@ import {
 } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LeetCodeProgressCircle from "@/components/ui/LeetCodeProgressCircle";
-import PlatformCarousel from "@/components/STUDENT/PlatformCarousel";
+import PlatformCarousel from "@/components/student/PlatformCarousel";
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 

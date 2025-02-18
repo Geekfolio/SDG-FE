@@ -1,4 +1,4 @@
-import { StudentDetails } from "@/components/STAFFS/StudentDetails";
+import { StudentDetails } from "@/components/staffs/StudentDetails";
 import Layout from "@/components/ui/layout";
 
 export default async function StudentPage(props: { params: Promise<{ id: string }> }) {

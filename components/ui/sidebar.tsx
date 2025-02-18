@@ -51,6 +51,7 @@ const staffNavItems: NavItemType[] = [
   { href: "/staff/dashboard", label: "Dashboard", icon: Home },
   { href: "/staff/events", label: "Event Creation", icon: BarChart2 },
   { href: "/staff/manage", label: "Student Management", icon: Receipt },
+  { href: "/staff/events/feedbacks", label: "Feedback", icon: MessagesSquare },
   // { href: "/join-request", label: "Join Request", icon: HelpCircle },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },

@@ -1,4 +1,4 @@
-import Content from "@/components/STUDENT/content";
+import Content from "@/components/student/content";
 import Layout from "@/components/ui/layout";
 import React from "react";
 

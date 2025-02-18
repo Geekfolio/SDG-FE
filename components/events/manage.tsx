@@ -18,7 +18,7 @@ import {
   CalendarClock,
   ActivitySquare,
 } from "lucide-react";
-import { Leaderboard } from "@/components/EVENTS/leaderboard";
+import { Leaderboard } from "@/components/events/leaderboard";
 import {
   Card,
   CardContent,
