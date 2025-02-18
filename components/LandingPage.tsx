@@ -79,16 +79,36 @@ export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  const [registrationComplete, setRegistrationComplete] = useState(false);
+
   useEffect(() => {
-    const store = localStorage.getItem("profile");
-    if (session) {
-      router.push(`${session.user.role}-dashboard`);
-    } else if (store !== null) {
-      const json = JSON.parse(store);
-      update({ ...json });
-      router.push(`${json.role}-dashboard`);
+    if (session && status === "authenticated" && !registrationComplete) {
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mail: session.user.email,
+        }),
+      })
+        .then((res) => res.json())
+        .then(async (data) => {
+          if (update) {
+            await update({ ...session.user, ...data.data });
+          }
+          localStorage.setItem("profile", JSON.stringify(data.data));
+          if ("role" in data.data && data.data.role === "student") {
+            router.push("/student-dashboard");
+          } else if ("role" in data.data && data.data.role === "staff") {
+            router.push("/staff-dashboard");
+          }
+          setRegistrationComplete(true);
+        })
+        .catch((error) => {
+          console.error("Registration error:", error);
+          router.push("/404");
+        });
     }
-  }, [session, router]);
+  }, [session, status, registrationComplete, router, update]);
 
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -104,8 +124,7 @@ export default function LandingPage() {
   const handleSignIn = async () => {
     try {
       setIsLoading(true);
-      // Redirect to /role after sign in
-      await signIn("google", { callbackUrl: "/role" });
+      await signIn("google");
     } catch (error) {
       console.error("Sign in error:", error);
     } finally {
