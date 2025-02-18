@@ -82,7 +82,7 @@ export default function ProfessionalEvents() {
     const fetchEvents = async () => {
       setIsLoading(true);
       try {
-        const res = await fetch("http://localhost:8080/events/all");
+        const res = await fetch("http://localhost:8080/events");
         if (res.ok) {
           const text = await res.text();
           let data;
@@ -414,9 +414,9 @@ export default function ProfessionalEvents() {
                   {getStatusIcon(selectedEvent.status)}
                   {selectedEvent.status}
                 </Badge>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+                {/* <span className="text-sm text-gray-500 dark:text-gray-400">
                   ID: #{selectedEvent.id}
-                </span>
+                </span> */}
               </div>
               <CardTitle className="text-2xl font-bold mt-2">
                 {selectedEvent.name}
