@@ -49,12 +49,21 @@ interface Event {
   logo?: string;
   prizes?: string;
   registrations_filled?: number;
+  internal: boolean;
+  link?: string;
 }
 
 export default function ProfessionalEvents() {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (selectedEvent) {
+      // For external hackathons (internal===false) require audit verification.
+      setCanSubmit(selectedEvent.internal ? true : false);
+    }
+  }, [selectedEvent]);
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const { data: session, status } = useSession();
@@ -63,6 +72,7 @@ export default function ProfessionalEvents() {
   const [feedbackEvent, setFeedbackEvent] = useState<Event | null>(null);
   const [rating, setRating] = useState<number>(0);
   const [feedbackText, setFeedbackText] = useState<string>("");
+  const [canSubmit, setCanSubmit] = useState<boolean>(true);
 
   // Registration state fields
   const [teamName, setTeamName] = useState("");
@@ -180,6 +190,24 @@ export default function ProfessionalEvents() {
     }
   }, [filter, session?.user?.email]);
 
+  useEffect(() => {
+    const handleAuditMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === "AUDIT_RESULT") {
+        const auditResult = event.data?.data?.result;
+        if (auditResult === true) {
+          setCanSubmit(true);
+          toast.success("Audit verification passed. You may now submit.");
+        } else {
+          setCanSubmit(false);
+          toast.error("Audit verification failed. Please try again.");
+        }
+      }
+    };
+
+    window.addEventListener("message", handleAuditMessage);
+    return () => window.removeEventListener("message", handleAuditMessage);
+  }, []);
+
   const validateForm = () => {
     let valid = true;
     const errors = {
@@ -258,6 +286,20 @@ export default function ProfessionalEvents() {
       toast.error("Error during registration.", {
         position: "top-right" as ToastPosition,
       });
+    }
+  };
+
+  const handleVerifySubmission = () => {
+    if (selectedEvent?.link) {
+      window.postMessage(
+        {
+          type: "AUDIT_REQUEST",
+          url: selectedEvent.link,
+        },
+        "*",
+      );
+    } else {
+      toast.error("Hackathon URL not available for audit.");
     }
   };
 
@@ -579,7 +621,7 @@ export default function ProfessionalEvents() {
                       id="team-email"
                       type="email"
                       value={teamEmail}
-                      disabled={true}
+                      disabled={teamEmail === undefined ? false : true}
                       className={`w-full ${formErrors.teamEmail ? "border-red-500 dark:border-red-500" : ""}`}
                     />
                     {formErrors.teamEmail && (
@@ -645,12 +687,25 @@ export default function ProfessionalEvents() {
                 <ArrowLeft className="h-4 w-4" />
                 Back to Events
               </Button>
-              <Button
-                onClick={handleRegister}
-                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-              >
-                Submit Registration
-              </Button>
+              <div className="flex gap-2">
+                {selectedEvent && !selectedEvent.internal && (
+                  <Button
+                    onClick={handleVerifySubmission}
+                    className="bg-yellow-600 hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-800"
+                  >
+                    Verify Submission
+                  </Button>
+                )}
+                <Button
+                  onClick={handleRegister}
+                  disabled={
+                    selectedEvent && !selectedEvent.internal && !canSubmit
+                  }
+                  className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                >
+                  Submit Registration
+                </Button>
+              </div>
             </CardFooter>
           </Card>
         ) : (
