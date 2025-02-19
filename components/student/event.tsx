@@ -196,10 +196,10 @@ export default function ProfessionalEvents() {
         const auditResult = event.data?.data?.result;
         if (auditResult === true) {
           setCanSubmit(true);
-          toast.success("Audit verification passed. You may now submit.");
+          toast.success("Registration verified. You may now submit.");
         } else {
           setCanSubmit(false);
-          toast.error("Audit verification failed. Please try again.");
+          toast.error("Can't Verify registration. Please try again.");
         }
       }
     };
@@ -291,6 +291,7 @@ export default function ProfessionalEvents() {
 
   const handleVerifySubmission = () => {
     if (selectedEvent?.link) {
+      console.log("otha", selectedEvent.link);
       window.postMessage(
         {
           type: "AUDIT_REQUEST",
@@ -302,7 +303,7 @@ export default function ProfessionalEvents() {
       toast.error("Hackathon URL not available for audit.");
     }
   };
-
+  
   const handleFeedbackSubmit = async () => {
     if (!feedbackEvent) return;
     const payload = {
