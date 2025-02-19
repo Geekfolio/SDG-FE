@@ -1,6 +1,6 @@
-'use client'
-import React, { useState, useEffect } from 'react';
-import { FaStar } from 'react-icons/fa';
+"use client";
+import React, { useState, useEffect } from "react";
+import { FaStar } from "react-icons/fa";
 
 interface Event {
   name: string;
@@ -25,27 +25,27 @@ interface Feedback {
 
 const EventFeedback: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<string>('');
+  const [selectedEvent, setSelectedEvent] = useState<string>("");
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
 
   // Fetch list of events on component mount
   useEffect(() => {
-    fetch('http://localhost:8000/events/')
-      .then(response => {
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/events/`)
+      .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to fetch events');
+          throw new Error("Failed to fetch events");
         }
         return response.json();
       })
-      .then(data => {
-        console.log('Events:', data);  // Added console log
+      .then((data) => {
+        console.log("Events:", data); // Added console log
         setEvents(data);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
-        setError('Error fetching events');
+        setError("Error fetching events");
       });
   }, []);
 
@@ -53,20 +53,22 @@ const EventFeedback: React.FC = () => {
   useEffect(() => {
     if (selectedEvent) {
       setLoading(true);
-      fetch(`http://localhost:8000/events/feedback?event_name=${encodeURIComponent(selectedEvent)}`)
-        .then(response => {
+      fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/feedback?event_name=${encodeURIComponent(selectedEvent)}`,
+      )
+        .then((response) => {
           if (!response.ok) {
-            throw new Error('Failed to fetch feedbacks');
+            throw new Error("Failed to fetch feedbacks");
           }
           return response.json();
         })
-        .then(data => {
-          console.log('Feedbacks:', data);  // Added console log
+        .then((data) => {
+          console.log("Feedbacks:", data); // Added console log
           setFeedbacks(data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
-          setError('Error fetching feedbacks');
+          setError("Error fetching feedbacks");
         })
         .finally(() => setLoading(false));
     }
@@ -84,7 +86,7 @@ const EventFeedback: React.FC = () => {
       .map((_, i) => (
         <FaStar
           key={i}
-          className={`inline ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}
+          className={`inline ${i < rating ? "text-yellow-400" : "text-gray-300"}`}
         />
       ));
   };
@@ -92,15 +94,19 @@ const EventFeedback: React.FC = () => {
   // Helper function to format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Student Feedback Dashboard</h1>
-          <p className="mt-2 text-sm text-gray-600">View student feedback for various events</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Student Feedback Dashboard
+          </h1>
+          <p className="mt-2 text-sm text-gray-600">
+            View student feedback for various events
+          </p>
         </div>
 
         {error && (
@@ -126,9 +132,10 @@ const EventFeedback: React.FC = () => {
               <option key="default" value="">
                 --Select an event--
               </option>
-              {events.map(event => (
+              {events.map((event) => (
                 <option key={event.name} value={event.name}>
-                  {event.name} ({formatDate(event.start)} - {formatDate(event.end)})
+                  {event.name} ({formatDate(event.start)} -{" "}
+                  {formatDate(event.end)})
                 </option>
               ))}
             </select>
