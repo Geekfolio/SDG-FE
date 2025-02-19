@@ -754,9 +754,9 @@ export default function ProfessionalEvents() {
               </div>
             ) : displayedEvents.length > 0 ? (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {displayedEvents.map((ev) => (
+                {displayedEvents.map((ev, idx) => (
                   <Card
-                    key={ev.id}
+                    key={`${ev.id}-${idx}`}
                     className="shadow-md hover:shadow-xl transition-shadow overflow-hidden border dark:border-gray-700 h-full flex flex-col"
                   >
                     <div className="h-36 bg-gradient-to-r from-blue-500 to-violet-500 flex items-center justify-center relative overflow-hidden">
