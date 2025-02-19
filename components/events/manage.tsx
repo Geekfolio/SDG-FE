@@ -55,28 +55,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import "react-toastify/dist/ReactToastify.css";
+import { departmentOptions, yearOptions } from "@/utils/types";
 
-const departmentOptions = [
-  { value: "AIML", label: "AIML" },
-  { value: "ECE", label: "ECE" },
-  { value: "EEE", label: "EEE" },
-  { value: "CSE", label: "CSE" },
-  { value: "CYBER", label: "CYBER" },
-  { value: "IT", label: "IT" },
-  { value: "MECH", label: "MECH" },
-  { value: "MCT", label: "MCT" },
-  { value: "AIDS", label: "AIDS" },
-  { value: "BIO", label: "BIO" },
-  { value: "CSBS", label: "CSBS" },
-  { value: "CIVIL", label: "CIVIL" },
-];
-
-const yearOptions = [
-  { value: "1", label: "1st Year" },
-  { value: "2", label: "2nd Year" },
-  { value: "3", label: "3rd Year" },
-  { value: "4", label: "4th Year" },
-];
 
 // Define status colors
 const statusColors = {
