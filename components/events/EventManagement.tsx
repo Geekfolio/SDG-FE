@@ -529,7 +529,6 @@ function EventCreationForm({ onClose }: { onClose: () => void }) {
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/events/create`,
         {
           method: "POST",
-          mode: "cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(eventData),
         },
