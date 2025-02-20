@@ -14,6 +14,7 @@ import {
   Settings,
   HelpCircle,
   Menu,
+  Upload,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -62,6 +63,11 @@ const studentNavItems: NavItemType[] = [
   { href: "/student/dashboard", label: "Dashboard", icon: Home },
   { href: "/student/events", label: "Events", icon: Video },
   { href: "/student/workshop", label: "Workshop", icon: Shield },
+  {
+    href: "/student/certificate-upload",
+    label: "Certificate Upload",
+    icon: Upload,
+  },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
 ];
