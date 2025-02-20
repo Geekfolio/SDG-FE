@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Search, X } from "lucide-react";
+import { Check, Search, X, FileText } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ODProofModal } from "@/components/hods/od-modal";
 
 // Mock data for demonstration
 const mockRequests = [
@@ -46,6 +47,7 @@ const mockRequests = [
     email: "john.doe@example.com",
     year: "3rd Year",
     cgpa: "3.8",
+    proofImage: "/placeholder.svg?height=600&width=400",
   },
   {
     id: 2,
@@ -59,6 +61,7 @@ const mockRequests = [
     email: "jane.smith@example.com",
     year: "2nd Year",
     cgpa: "3.9",
+    proofImage: "/placeholder.svg?height=600&width=400",
   },
   // Add more mock data as needed
 ];
@@ -66,6 +69,7 @@ const mockRequests = [
 export function ODRequestsTable() {
   const [requests, setRequests] = useState(mockRequests);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedProof, setSelectedProof] = useState<string | null>(null);
 
   const handleAccept = (id: number) => {
     setRequests(
@@ -114,6 +118,7 @@ export function ODRequestsTable() {
               <TableHead>From Date</TableHead>
               <TableHead>To Date</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Proof</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -153,6 +158,15 @@ export function ODRequestsTable() {
                 <TableCell>{request.fromDate}</TableCell>
                 <TableCell>{request.toDate}</TableCell>
                 <TableCell>{request.status}</TableCell>
+                <TableCell>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setSelectedProof(request.proofImage)}
+                  >
+                    <FileText className="h-4 w-4 mr-1" /> Show Proof
+                  </Button>
+                </TableCell>
                 <TableCell>
                   {request.status === "Pending" && (
                     <div className="flex space-x-2">
@@ -216,6 +230,11 @@ export function ODRequestsTable() {
           </TableBody>
         </Table>
       </div>
+      <ODProofModal
+        isOpen={!!selectedProof}
+        onClose={() => setSelectedProof(null)}
+        imageUrl={"/oddletter.jpeg"}
+      />
     </div>
   );
 }
