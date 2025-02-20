@@ -81,6 +81,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
+import ExportToExcelButton from "./ExportToExcel";
 
 const departments = ["CS", "ECE", "IT", "Civil", "Mechanical", "Electrical"];
 const years = ["Year 1", "Year 2", "Year 3", "Year 4"];
@@ -674,20 +675,7 @@ export default function StudentManagement() {
         </TabsList>
         
         <div className="flex gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex gap-1 items-center" disabled={isExporting}>
-                <Download className="w-4 h-4" />
-                Export
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={exportToExcel} className="flex items-center gap-2">
-                <FileSpreadsheet className="w-4 h-4" />
-                <span>Export to Excel</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <ExportToExcelButton data={students} />
         </div>
       </div>
 
