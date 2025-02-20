@@ -15,7 +15,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 interface Event {
   id: number;
   name: string;
-  email: string;
+  creator: string;
   description: string;
   event_type: string;
   team_size: number;
@@ -127,7 +127,7 @@ export default function PopupEventModal({
           {/* Contact Email */}
           <div className="mt-4">
             <p className="text-sm font-medium">Contact Email:</p>
-            <p>{event.email}</p>
+            <p>{event.creator}</p>
           </div>
         </CardContent>
         <CardFooter className="flex justify-end space-x-2">

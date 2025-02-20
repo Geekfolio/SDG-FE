@@ -37,7 +37,7 @@ import PopupEventModal from "@/components/PopupEventModal";
 interface Event {
   id: number;
   name: string;
-  email: string;
+  creator: string;
   description: string;
   event_type: string;
   team_size: number;
