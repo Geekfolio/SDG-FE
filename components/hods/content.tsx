@@ -37,7 +37,7 @@ import { ODProofModal } from "@/components/hods/od-modal";
 const mockRequests = [
   {
     id: 1,
-    studentName: "John Doe",
+    studentName: "Shreehari S",
     studentId: "ST001",
     department: "Computer Science",
     reason: "Attending a conference",
@@ -51,7 +51,7 @@ const mockRequests = [
   },
   {
     id: 2,
-    studentName: "Jane Smith",
+    studentName: "Shalini",
     studentId: "ST002",
     department: "Electrical Engineering",
     reason: "Participating in a hackathon",
