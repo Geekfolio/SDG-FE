@@ -199,7 +199,7 @@ export default function ProfessionalEvents() {
     const handleAuditMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === "AUDIT_RESULT") {
         const auditResult = event.data?.data?.result;
-        if (auditResult === true) {
+        if (auditResult.status === true) {
           setCanSubmit(true);
           toast.success("Registration verified. You may now submit.");
         } else {
