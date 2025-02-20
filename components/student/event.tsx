@@ -52,6 +52,13 @@ interface Event {
   registrations_filled?: number;
   internal: boolean;
   link?: string;
+  tags?: string[];
+}
+
+interface Staff {
+  email: string;
+  name: string;
+  tags: string[];
 }
 
 export default function ProfessionalEvents() {
@@ -71,6 +78,15 @@ export default function ProfessionalEvents() {
   const [filter, setFilter] = useState("all");
   const [internalFilter, setInternalFilter] = useState("both");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
+  const allTags = React.useMemo(() => {
+    const tagsSet = new Set<string>();
+    events.forEach((ev) => {
+      ev.tags?.forEach((tag) => tagsSet.add(tag));
+    });
+    return Array.from(tagsSet);
+  }, [events]);
+
   const { data: session, status } = useSession();
 
   const [registeredEvents, setRegisteredEvents] = useState<Event[]>([]);
@@ -85,6 +101,12 @@ export default function ProfessionalEvents() {
   const [teamEmail, setTeamEmail] = useState(session?.user.email!);
   const [additionalInfo, setAdditionalInfo] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [mentorshipRequired, setMentorshipRequired] = useState(false);
+  const [mentorEmail, setMentorEmail] = useState("");
+  const [showMentorPopup, setShowMentorPopup] = useState(false);
+  const [mentorSearchQuery, setMentorSearchQuery] = useState("");
+  const [mentorSelectedTag, setMentorSelectedTag] = useState("");
+  const [staffList, setStaffList] = useState<Staff[]>([]);
   const [formErrors, setFormErrors] = useState({
     teamName: "",
     teamMembers: "",
@@ -196,6 +218,29 @@ export default function ProfessionalEvents() {
   }, [filter, session?.user?.email]);
 
   useEffect(() => {
+    const fetchStaffs = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/staffs`,
+        );
+        if (res.ok) {
+          const data = await res.json();
+          console.log(data);
+          setStaffList(data);
+        } else {
+          console.error("Error fetching staffs");
+        }
+      } catch (error) {
+        console.error("Error fetching staffs:", error);
+      }
+    };
+
+    if (showMentorPopup) {
+      fetchStaffs();
+    }
+  }, [showMentorPopup]);
+
+  useEffect(() => {
     const handleAuditMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === "AUDIT_RESULT") {
         const auditResult = event.data?.data?.result;
@@ -212,6 +257,16 @@ export default function ProfessionalEvents() {
     window.addEventListener("message", handleAuditMessage);
     return () => window.removeEventListener("message", handleAuditMessage);
   }, []);
+
+  useEffect(() => {
+    if (mentorshipRequired && !mentorEmail) {
+      setShowMentorPopup(true);
+    }
+    // Optionally, clear mentor email when turned off
+    if (!mentorshipRequired) {
+      setMentorEmail("");
+    }
+  }, [mentorshipRequired, mentorEmail]);
 
   const validateForm = () => {
     let valid = true;
@@ -366,6 +421,9 @@ export default function ProfessionalEvents() {
     // Filter by event source (internal/external)
     if (internalFilter === "internal" && !ev.internal) return false;
     if (internalFilter === "external" && ev.internal) return false;
+    // New tag filter:
+    if (selectedTag && (!ev.tags || !ev.tags.includes(selectedTag)))
+      return false;
 
     // Filter by status
     const status = ev.status.toLowerCase();
@@ -375,15 +433,33 @@ export default function ProfessionalEvents() {
     // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      return (
-        ev.name.toLowerCase().includes(query) ||
-        ev.event_type.toLowerCase().includes(query) ||
-        ev.organization?.toLowerCase().includes(query)
-      );
+      if (
+        !(
+          ev.name.toLowerCase().includes(query) ||
+          ev.event_type.toLowerCase().includes(query) ||
+          ev.organization?.toLowerCase().includes(query)
+        )
+      ) {
+        return false;
+      }
     }
 
     return true;
   });
+
+  const filteredStaff = staffList.filter(
+    (staff: any) =>
+      staff.name.toLowerCase().includes(mentorSearchQuery.toLowerCase()) &&
+      (mentorSelectedTag ? staff.tags?.includes(mentorSelectedTag) : true),
+  );
+
+  const mentorTags = React.useMemo(() => {
+    const tagsSet = new Set<string>();
+    staffList.forEach((staff: any) => {
+      staff.tags?.forEach((tag: string) => tagsSet.add(tag));
+    });
+    return Array.from(tagsSet);
+  }, [staffList]);
 
   const displayedEvents =
     filter === "registered"
@@ -391,6 +467,9 @@ export default function ProfessionalEvents() {
           // Filter by event source (internal/external)
           if (internalFilter === "internal" && !ev.internal) return false;
           if (internalFilter === "external" && ev.internal) return false;
+          // New tag filter:
+          if (selectedTag && (!ev.tags || !ev.tags.includes(selectedTag)))
+            return false;
 
           if (searchQuery) {
             const query = searchQuery.toLowerCase();
@@ -619,6 +698,39 @@ export default function ProfessionalEvents() {
                   </div>
                 </div>
               </div>
+              <div className="pt-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    id="mentorship-required"
+                    type="checkbox"
+                    className="mt-1"
+                    checked={mentorshipRequired}
+                    onChange={(e) => setMentorshipRequired(e.target.checked)}
+                  />
+                  <Label
+                    htmlFor="mentorship-required"
+                    className="text-sm font-medium"
+                  >
+                    Mentorship Required
+                  </Label>
+                </div>
+              </div>
+
+              {mentorshipRequired && (
+                <div className="mt-4 space-y-2">
+                  <Label htmlFor="mentor-email" className="text-sm font-medium">
+                    Mentor Email
+                  </Label>
+                  <Input
+                    id="mentor-email"
+                    placeholder="Select a mentor from the popup..."
+                    value={mentorEmail}
+                    readOnly
+                    className="cursor-pointer"
+                    onClick={() => setShowMentorPopup(true)}
+                  />
+                </div>
+              )}
             </CardContent>
 
             <CardFooter className="flex justify-between pt-4 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
@@ -667,13 +779,30 @@ export default function ProfessionalEvents() {
                 </TabsList>
               </Tabs>
 
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <span>Sort by:</span>
-                <select className="bg-transparent border rounded px-2 py-1 cursor-pointer">
-                  <option>Latest</option>
-                  <option>Oldest</option>
-                  <option>Popularity</option>
-                </select>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span>Sort by:</span>
+                  <select className="bg-transparent border rounded px-2 py-1 cursor-pointer">
+                    <option>Latest</option>
+                    <option>Oldest</option>
+                    <option>Popularity</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span>Tag:</span>
+                  <select
+                    value={selectedTag}
+                    onChange={(e) => setSelectedTag(e.target.value)}
+                    className="bg-transparent border rounded px-2 py-1 cursor-pointer"
+                  >
+                    <option value="">All</option>
+                    {allTags.map((tag, index) => (
+                      <option key={index} value={tag}>
+                        {tag}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
@@ -920,6 +1049,65 @@ export default function ProfessionalEvents() {
           }}
           event={activePopupEvent}
         />
+      )}
+
+      {showMentorPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-3xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-semibold">Select a Mentor</h3>
+              <button
+                onClick={() => setShowMentorPopup(false)}
+                className="text-gray-700 dark:text-gray-300"
+              >
+                Close
+              </button>
+            </div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
+              <Input
+                type="text"
+                placeholder="Search staffs by name"
+                value={mentorSearchQuery}
+                onChange={(e) => setMentorSearchQuery(e.target.value)}
+                className="w-full sm:w-1/2"
+              />
+              <select
+                value={mentorSelectedTag}
+                onChange={(e) => setMentorSelectedTag(e.target.value)}
+                className="bg-white dark:bg-gray-700 border rounded px-2 py-1"
+              >
+                <option value="">All Tags</option>
+                {mentorTags.map((tag, idx) => (
+                  <option key={idx} value={tag}>
+                    {tag}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+              {filteredStaff.map((staff: any) => (
+                <div
+                  key={staff.email}
+                  className="cursor-pointer p-4 border rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => {
+                    setMentorEmail(staff.email);
+                    setShowMentorPopup(false);
+                  }}
+                >
+                  <div className="font-semibold">{staff.name}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {staff.department}
+                  </div>
+                </div>
+              ))}
+              {filteredStaff.length === 0 && (
+                <div className="col-span-full text-center text-gray-500">
+                  No staffs found.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
