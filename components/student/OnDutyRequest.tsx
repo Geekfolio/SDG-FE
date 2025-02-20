@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Card } from "../ui/card";
+import { CardHeader } from "../ui/card";
+import { CardTitle } from "../ui/card";
+import { CardContent } from "../ui/card";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
+import { Input } from "../ui/input";
 
 export default function OnDutyRequest() {
   const [reason, setReason] = useState("");
@@ -24,42 +32,36 @@ export default function OnDutyRequest() {
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-4">On Duty Request</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="reason" className="block text-sm font-medium mb-1">
-            Reason
-          </label>
-          <textarea
-            id="reason"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder="Enter your reason for on duty"
-            required
-            className="w-full p-2 border rounded"
-          ></textarea>
-        </div>
-        <div className="mb-4">
-          <label htmlFor="proof" className="block text-sm font-medium mb-1">
-            Proof (Image)
-          </label>
-          <input
-            id="proof"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded"
-        >
-          Submit Request
-        </button>
-      </form>
+    <Card className="max-w-md mx-auto mt-8">
+      <CardHeader>
+        <CardTitle>On Duty Request</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <Label htmlFor="reason">Reason</Label>
+            <Textarea
+              id="reason"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Enter your reason for on duty"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <Label htmlFor="proof">Proof (Image)</Label>
+            <Input
+              id="proof"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              required
+            />
+          </div>
+          <Button type="submit">Submit Request</Button>
+        </form>
+      </CardContent>
       <ToastContainer />
-    </div>
+    </Card>
   );
 }
