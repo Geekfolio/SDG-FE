@@ -65,6 +65,7 @@ export default function ProfessionalEvents() {
     }
   }, [selectedEvent]);
   const [filter, setFilter] = useState("all");
+  const [internalFilter, setInternalFilter] = useState("both");
   const [searchQuery, setSearchQuery] = useState("");
   const { data: session, status } = useSession();
 
@@ -358,6 +359,10 @@ export default function ProfessionalEvents() {
   };
 
   const filteredEvents = events.filter((ev) => {
+    // Filter by event source (internal/external)
+    if (internalFilter === "internal" && !ev.internal) return false;
+    if (internalFilter === "external" && ev.internal) return false;
+
     // Filter by status
     const status = ev.status.toLowerCase();
     if (filter === "open" && !status.includes("open")) return false;
@@ -379,6 +384,10 @@ export default function ProfessionalEvents() {
   const displayedEvents =
     filter === "registered"
       ? registeredEvents.filter((ev) => {
+          // Filter by event source (internal/external)
+          if (internalFilter === "internal" && !ev.internal) return false;
+          if (internalFilter === "external" && ev.internal) return false;
+
           if (searchQuery) {
             const query = searchQuery.toLowerCase();
             return (
@@ -733,6 +742,20 @@ export default function ProfessionalEvents() {
                   <option>Popularity</option>
                 </select>
               </div>
+            </div>
+
+            <div className="flex justify-center mb-4">
+              <Tabs
+                defaultValue="both"
+                onValueChange={(value) => setInternalFilter(value)}
+                className="w-full max-w-md"
+              >
+                <TabsList className="grid grid-cols-3">
+                  <TabsTrigger value="both">Both</TabsTrigger>
+                  <TabsTrigger value="internal">Internal</TabsTrigger>
+                  <TabsTrigger value="external">External</TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
 
             {isLoading ? (
