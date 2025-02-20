@@ -15,6 +15,7 @@ import {
   HelpCircle,
   Menu,
   Upload,
+  Clipboard,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -68,6 +69,7 @@ const studentNavItems: NavItemType[] = [
     label: "Certificate Upload",
     icon: Upload,
   },
+  { href: "/student/on-duty-request", label: "On Duty Request", icon: Clipboard },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/help", label: "Help", icon: HelpCircle },
 ];
