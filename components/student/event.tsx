@@ -32,6 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { useSession } from "next-auth/react";
+import PopupEventModal from "@/components/PopupEventModal";
 
 interface Event {
   id: number;
@@ -57,6 +58,9 @@ export default function ProfessionalEvents() {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [popupOpen, setPopupOpen] = useState<boolean>(false);
+  const [activePopupEvent, setActivePopupEvent] = useState<Event | null>(null);
 
   useEffect(() => {
     if (selectedEvent) {
@@ -304,7 +308,7 @@ export default function ProfessionalEvents() {
       toast.error("Hackathon URL not available for audit.");
     }
   };
-  
+
   const handleFeedbackSubmit = async () => {
     if (!feedbackEvent) return;
     const payload = {
@@ -513,43 +517,6 @@ export default function ProfessionalEvents() {
             </CardHeader>
 
             <CardContent className="pt-6 space-y-6">
-              <div className="grid md:grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/30 p-4 rounded-lg">
-                <div className="flex flex-col gap-2 items-center justify-center p-3 border-r dark:border-gray-700">
-                  <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  <span className="text-xs uppercase font-medium text-gray-500">
-                    Team Size
-                  </span>
-                  <span className="font-bold text-xl text-gray-900 dark:text-white">
-                    {selectedEvent.team_size}
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-2 items-center justify-center p-3 border-r dark:border-gray-700">
-                  <Award className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  <span className="text-xs uppercase font-medium text-gray-500">
-                    Prizes Worth
-                  </span>
-                  <span className="font-bold text-xl text-gray-900 dark:text-white">
-                    {selectedEvent.prizes}
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-2 items-center justify-center p-3">
-                  <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  <span className="text-xs uppercase font-medium text-gray-500">
-                    Duration
-                  </span>
-                  <span className="font-bold text-xl text-gray-900 dark:text-white">
-                    {Math.round(
-                      (new Date(selectedEvent.end).getTime() -
-                        new Date(selectedEvent.start).getTime()) /
-                        (1000 * 60 * 60 * 24),
-                    )}{" "}
-                    days
-                  </span>
-                </div>
-              </div>
-
               {selectedEvent.description && (
                 <div>
                   <h3 className="text-lg font-semibold mb-2">
@@ -561,24 +528,8 @@ export default function ProfessionalEvents() {
                 </div>
               )}
 
-              <div>
-                <h3 className="text-sm font-medium mb-2 flex items-center gap-1 text-gray-600 dark:text-gray-400">
-                  <Users className="h-4 w-4" />
-                  <span>Registration Status</span>
-                </h3>
-                <div className="space-y-2">
-                  <Progress value={selectedEvent.registrations_filled} />
-                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                    <span>{selectedEvent.registrations_filled}% filled</span>
-                    <span>Limited Slots</span>
-                  </div>
-                </div>
-              </div>
-
               <div className="space-y-6 pt-6 border-t dark:border-gray-700">
-                <h3 className="text-xl font-semibold mb-4">
-                  Registration Details
-                </h3>
+                <h3 className="text-xl font-semibold mb-4">Register Now</h3>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -639,24 +590,6 @@ export default function ProfessionalEvents() {
                         {formErrors.teamEmail}
                       </p>
                     )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="additional-info"
-                      className="text-sm font-medium"
-                    >
-                      Additional Information{" "}
-                      <span className="text-xs text-gray-500">(optional)</span>
-                    </Label>
-                    <Textarea
-                      id="additional-info"
-                      placeholder="Tell us why you're interested in this event"
-                      value={additionalInfo}
-                      onChange={(e) => setAdditionalInfo(e.target.value)}
-                      className="w-full"
-                      rows={3}
-                    />
                   </div>
 
                   <div className="pt-2">
@@ -867,19 +800,31 @@ export default function ProfessionalEvents() {
                           </Button>
                         )
                       ) : (
-                        <Button
-                          onClick={() => setSelectedEvent(ev)}
-                          disabled={!ev.status.toLowerCase().includes("open")}
-                          className={`w-full ${
-                            ev.status.toLowerCase().includes("open")
-                              ? "bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                              : ""
-                          }`}
-                        >
-                          {ev.status.toLowerCase().includes("open")
-                            ? "Register Now"
-                            : "Closed"}
-                        </Button>
+                        <>
+                          <Button
+                            onClick={() => setSelectedEvent(ev)}
+                            disabled={!ev.status.toLowerCase().includes("open")}
+                            className={`w-full ${
+                              ev.status.toLowerCase().includes("open")
+                                ? "bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                                : ""
+                            }`}
+                          >
+                            {ev.status.toLowerCase().includes("open")
+                              ? "Register Now"
+                              : "Closed"}
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              setActivePopupEvent(ev);
+                              setPopupOpen(true);
+                            }}
+                            variant="secondary"
+                            className="w-full"
+                          >
+                            View Details
+                          </Button>
+                        </>
                       )}
                     </CardFooter>
                   </Card>
@@ -959,6 +904,22 @@ export default function ProfessionalEvents() {
             </div>
           </div>
         </div>
+      )}
+
+      {activePopupEvent && (
+        <PopupEventModal
+          isOpen={popupOpen}
+          onClose={() => {
+            setPopupOpen(false);
+            setActivePopupEvent(null);
+          }}
+          onRegister={() => {
+            setSelectedEvent(activePopupEvent);
+            setPopupOpen(false);
+            setActivePopupEvent(null);
+          }}
+          event={activePopupEvent}
+        />
       )}
     </div>
   );
