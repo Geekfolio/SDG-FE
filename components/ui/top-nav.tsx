@@ -20,6 +20,23 @@ interface BreadcrumbItem {
   href: string;
 }
 
+// New notification function to send a web-push notification
+function sendPushNotification() {
+  if ("Notification" in window) {
+    if (Notification.permission === "granted") {
+      new Notification("New hackathon!");
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          new Notification("New hackathon!");
+        }
+      });
+    }
+  } else {
+    console.error("Browser does not support notifications");
+  }
+}
+
 export default function TopNav() {
   const pathname = usePathname();
   const { data: session } = useSession();
@@ -67,6 +84,8 @@ export default function TopNav() {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4 ml-auto sm:ml-0">
+        {/* Invisible button to trigger web-push notification */}
+        <button onClick={sendPushNotification}> . </button>
         <NotificationDropdown />
 
         <ThemeToggle />
@@ -86,7 +105,7 @@ export default function TopNav() {
             sideOffset={8}
             className="w-[280px] sm:w-80 bg-background border-border rounded-lg shadow-lg"
           >
-            <Profile01/>
+            <Profile01 />
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
